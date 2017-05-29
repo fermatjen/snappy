@@ -164,6 +164,30 @@ public class IOUtils {
         }
     }
 
+    public static ArrayList getAllLinesFromFile(String dataFile, int processOnly) {
+
+        ArrayList linesList = new ArrayList();
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(dataFile)))) {
+            String line;
+
+            int count = 0;
+            while ((line = br.readLine()) != null) {
+                //System.out.println(count);
+                if (count >= processOnly) {
+                    break;
+                }
+                linesList.add(line.trim());
+                count++;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        return linesList;
+
+    }
+
     public static void writeSummary(String dataFile, String summaryFile, ArrayList incidentList, int processOnly) {
 
         FileWriter writer = null;

@@ -26,8 +26,8 @@ import java.util.Iterator;
  * @author fjenning
  */
 public class Scorer {
-    
-        public static ArrayList scoreAllGrams(ArrayList incidentList, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap) {
+
+    public static ArrayList scoreAllGrams(ArrayList incidentList, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap) {
 
         //Second pass
         ArrayList dupIncidentList = new ArrayList();
@@ -38,7 +38,6 @@ public class Scorer {
             String line = (String) incidentList.get(j);
 
             //System.out.println("INCIDENT: " + line);
-
             line = line.trim();
             double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
             if (gramScore > 0) {
@@ -56,7 +55,6 @@ public class Scorer {
                 System.out.println("    "+count + ". " + hib + " SCORE: " + incidentMap.get(hib));
                 System.out.println("");
              */
-
             count++;
 
         }
@@ -65,10 +63,10 @@ public class Scorer {
         return dupIncidentList;
 
     }
-        
+
     public static double getGramScore(String sentence, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap) {
         double score = 0;
-        
+
         //Strict match in unigram list
         Iterator i1 = unigramMap.keySet().iterator();
         while (i1.hasNext()) {
@@ -76,36 +74,35 @@ public class Scorer {
             if (sentence.contains(gram)) {
 
                 int c1 = (int) unigramMap.get(gram);
-                double s = (c1 * 1) + (gram.length()*0.05);
+                double s = (c1 * 1) + (gram.length() * 0.05);
                 score = score + s;
                 //System.out.println("         Match (1): " + gram + " (score: +" + (s)+")");
             }
         }
-        
-        if(score <= 1){
+
+        if (score <= 1) {
             return 0;
         }
-        
+
         Iterator i0 = verbMap.keySet().iterator();
         while (i0.hasNext()) {
             String gram = (String) i0.next();
             if (sentence.contains(gram)) {
 
                 int c1 = (int) verbMap.get(gram);
-                double s = (c1 * 1) + (gram.length()*0.05);
+                double s = (c1 * 1) + (gram.length() * 0.05);
                 score = score + s;
                 //System.out.println("         Match (1): " + gram + " (score: +" + (s)+")");
             }
         }
 
-        
         Iterator i2 = bigramMap.keySet().iterator();
         while (i2.hasNext()) {
             String gram = (String) i2.next();
             if (sentence.contains(gram)) {
                 int c1 = (int) bigramMap.get(gram);
 
-                double s = (c1 * 2) + (gram.length()*0.15);
+                double s = (c1 * 2) + (gram.length() * 0.15);
                 score = score + s;
                 //System.out.println("         Match (2): " + gram + " (score: +" + (s));
             }
@@ -116,7 +113,7 @@ public class Scorer {
             if (sentence.contains(gram)) {
                 int c1 = (int) trigramMap.get(gram);
 
-                double s = (c1 * 3) + (gram.length()*0.2);
+                double s = (c1 * 3) + (gram.length() * 0.2);
                 score = score + s;
                 //System.out.println("         Match (3): " + gram + " (score: +" + (s));
             }
@@ -127,7 +124,7 @@ public class Scorer {
             if (sentence.contains(gram)) {
                 int c1 = (int) quadgramMap.get(gram);
 
-                double s = (c1 * 4) + (gram.length()*0.6);
+                double s = (c1 * 4) + (gram.length() * 0.6);
                 score = score + s;
                 //System.out.println("         Match (4): " + gram + " (score: +" + (s));
             }
@@ -135,5 +132,5 @@ public class Scorer {
 
         return score;
     }
-    
+
 }

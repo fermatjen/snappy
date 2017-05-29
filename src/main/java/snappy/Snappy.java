@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import snappy.model.Learner;
 import snappy.model.NueralGramModel;
 import snappy.model.TrainerModel;
+import snappy.ngrams.Predictor;
 import snappy.util.io.ConfigModel;
 import static snappy.util.io.IOUtils.loadConfigFile;
 import static snappy.util.io.IOUtils.loadTrainingFile;
@@ -46,8 +47,7 @@ public class Snappy {
     private static String summaryFile = null;
     private static String modelFile = null;
     private static String trainingFile = null;
-    private static int processOnly = 50;
-
+    private static int processOnly = 10;
 
     public static void doTraining() {
         //TRAINING
@@ -57,18 +57,18 @@ public class Snappy {
 
         //Get all trainer models
         ArrayList trainerModelList = loadTrainingFile(trainingFile);
-        
+
         for (int i = 0; i < trainerModelList.size(); i++) {
             TrainerModel trainerModel = (TrainerModel) trainerModelList.get(i);
             String label = trainerModel.getLabel();
-            File modelFilePath = new File(modelFile,"s_"+label+".ser");
+            File modelFilePath = new File(modelFile, "s_" + label + ".ser");
             //Start Learning
             Learner learner = new Learner(new NueralGramModel(), dataFile, trainerModel, processOnly);
             learner.startLearning();
             learner.printLearnStats();
             learner.writeIncidents(summaryFile);
             learner.updateModel(true, modelFilePath.getAbsolutePath());
-            
+
             learner.printAllGrams();
         }
     }
@@ -76,9 +76,28 @@ public class Snappy {
     public static void doTesting() {
         //TESTING
         //Start testing
-        Learner learner = new Learner(new NueralGramModel(), null, null, processOnly);
-        learner.startTesting(modelFile);
-        learner.printLearnStats();
+        File modelFilePath = new File(modelFile);
+        File children[] = modelFilePath.listFiles();
+        ArrayList nueralGramModelList = new ArrayList();
+
+        for (int i = 0; i < children.length; i++) {
+            File mFile = children[i];
+            if (mFile.isFile()) {
+                String fpath = mFile.getAbsolutePath();
+                if (fpath.endsWith(".ser")) {
+                    Learner learner = new Learner(new NueralGramModel(), null, null, processOnly);
+                    learner.loadModels(fpath);
+                    learner.printLearnStats();
+                    //Get the nueral gram model
+                    NueralGramModel nueralGramModel = learner.getModel();
+                    nueralGramModelList.add(nueralGramModel);
+                }
+            }
+        }
+        
+        //Start prediction
+        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly);
+        
     }
 
     public static void main(String[] args) {
@@ -103,10 +122,9 @@ public class Snappy {
             }
 
             //Training
-            doTraining();
-
+            //doTraining();
             //Testing
-            //doTesting();
+            doTesting();
         } catch (URISyntaxException ex) {
             Logger.getLogger(Snappy.class
                     .getName()).log(Level.SEVERE, null, ex);

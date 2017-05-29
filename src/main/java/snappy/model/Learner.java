@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package snappy.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import snappy.ngrams.Populater;
@@ -25,30 +25,31 @@ import snappy.pos.POSScrapper;
 import static snappy.util.grams.GramStats.printGramStats;
 import static snappy.util.grams.GramUtils.loadGramsFromDataFile;
 import snappy.util.io.IOUtils;
+import static snappy.util.io.IOUtils.getAllLinesFromFile;
 import static snappy.util.io.IOUtils.writeSummary;
 
 /**
  *
  * @author fjenning
  */
-public class Learner extends AbstractLearner{
-    
+public class Learner extends AbstractLearner {
+
     private HashMap unigramMap = new HashMap();
     private HashMap bigramMap = new HashMap();
     private HashMap trigramMap = new HashMap();
     private HashMap quadgramMap = new HashMap();
     private HashMap verbMap = new HashMap();
-    
+
     private NueralGramModel nueralGramModel = null;
 
     private ArrayList incidentList = new ArrayList();
 
     private TrainerModel trainerModel = null;
-    
+
     private POSScrapper posScrapper = null;
-    
+
     private int processOnly = 100;
-    
+
     private String dataFile = null;
 
     public Learner(NueralGramModel nueralGramModel, String dataFile, TrainerModel trainerModel, int processOnly) {
@@ -59,44 +60,40 @@ public class Learner extends AbstractLearner{
         posScrapper = new POSScrapper(new NLPModel());
         this.processOnly = processOnly;
     }
-    
-    
 
     @Override
     void learnFromGrams() {
         incidentList = loadGramsFromDataFile(dataFile, trainerModel, processOnly);
-        
+
         //First, load all grams from the incident list
         loadGramsFromIncidentList();
-        
+
         //Second, score all grams
         incidentList = scoreAllGrams(incidentList, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
-        
+
         //Third, Re-populate grams
         loadGramsFromIncidentList();
-        
+
     }
-    
-    
 
     @Override
     void learnFromPOS() {
         //POS Learner
         loadVerbsFromIncidentList(posScrapper);
-        
-    
+
     }
-    
-    public void writeIncidents(String summaryFile){
+
+    public void writeIncidents(String summaryFile) {
         writeSummary(dataFile, summaryFile, incidentList, processOnly);
     }
-    
-    public void startLearning(){
+
+    public void startLearning() {
         learnFromGrams();
         learnFromPOS();
     }
-    
-    public void startTesting(String modelFile){
+
+    public void loadModels(String modelFile) {
+        
         nueralGramModel = IOUtils.readModelFromFile(modelFile);
         unigramMap = nueralGramModel.getUnigramMap();
         bigramMap = nueralGramModel.getBigramMap();
@@ -106,10 +103,14 @@ public class Learner extends AbstractLearner{
         trainerModel = nueralGramModel.getTrainerModel();
     }
     
-    public void printLearnStats(){
-         printGramStats(unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
+    public NueralGramModel getModel(){
+        return nueralGramModel;
     }
-    
+
+    public void printLearnStats() {
+        printGramStats(unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
+    }
+
     private void loadVerbsFromIncidentList(POSScrapper posScrapper) {
         verbMap.clear();
         ArrayList clusters = trainerModel.getClusters();
@@ -148,7 +149,7 @@ public class Learner extends AbstractLearner{
         }
 
     }
-    
+
     private void loadGramsFromIncidentList() {
         //Flush all gramLists
         unigramMap.clear();
@@ -161,11 +162,11 @@ public class Learner extends AbstractLearner{
             populateNgrams(incident);
         }
     }
-    
+
     private void populateNgrams(String line) {
 
         ArrayList clusters = trainerModel.getClusters();
-        
+
         //Building unigram map
         GramModel gramModel = new GramModel();
         gramModel.setNgramMap(unigramMap);
@@ -202,7 +203,7 @@ public class Learner extends AbstractLearner{
 
     @Override
     public void updateModel(boolean overwrite, String outFile) {
-        
+
         //Create a NueralGramModel that can be persisted
         nueralGramModel.setUnigramMap(unigramMap);
         nueralGramModel.setBigramMap(bigramMap);
@@ -210,20 +211,19 @@ public class Learner extends AbstractLearner{
         nueralGramModel.setQuadgramMap(quadgramMap);
         nueralGramModel.setVerbMap(verbMap);
         nueralGramModel.setTrainerModel(trainerModel);
-        
+
         //Write model to file
         IOUtils.writeModelToFile(outFile, nueralGramModel);
-        
+
     }
-    
-    public void printAllGrams(){
-        
-        System.out.println("Unigram Map\r\n"+unigramMap.toString()+"\r\n");
-        System.out.println("Bigram Map\r\n"+bigramMap.toString()+"\r\n");
-        System.out.println("Trigram Map\r\n"+trigramMap.toString()+"\r\n");
-        System.out.println("Quadgram Map\r\n"+quadgramMap.toString()+"\r\n");
-        System.out.println("POS Map\r\n"+verbMap.toString()+"\r\n");
+
+    public void printAllGrams() {
+
+        System.out.println("Unigram Map\r\n" + unigramMap.toString() + "\r\n");
+        System.out.println("Bigram Map\r\n" + bigramMap.toString() + "\r\n");
+        System.out.println("Trigram Map\r\n" + trigramMap.toString() + "\r\n");
+        System.out.println("Quadgram Map\r\n" + quadgramMap.toString() + "\r\n");
+        System.out.println("POS Map\r\n" + verbMap.toString() + "\r\n");
     }
-    
-    
+
 }
