@@ -134,7 +134,7 @@ public class IOUtils {
                         if (patterns.indexOf(",") != -1) {
                             StringTokenizer stok = new StringTokenizer(patterns, ",");
                             while (stok.hasMoreTokens()) {
-                                String pattern = stok.nextToken().trim();
+                                String pattern = stok.nextToken().toLowerCase().trim();
                                 filterList.add(pattern);
                             }
                         }

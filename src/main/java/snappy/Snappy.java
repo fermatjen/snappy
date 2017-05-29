@@ -33,6 +33,7 @@ import snappy.ngrams.Predictor;
 import snappy.util.io.ConfigModel;
 import static snappy.util.io.IOUtils.loadConfigFile;
 import static snappy.util.io.IOUtils.loadTrainingFile;
+import static snappy.util.text.StringUtils.replace;
 
 /**
  *
@@ -61,6 +62,7 @@ public class Snappy {
         for (int i = 0; i < trainerModelList.size(); i++) {
             TrainerModel trainerModel = (TrainerModel) trainerModelList.get(i);
             String label = trainerModel.getLabel();
+            label = replace(label," ","_",0);
             File modelFilePath = new File(modelFile, "s_" + label + ".ser");
             //Start Learning
             Learner learner = new Learner(new NueralGramModel(), dataFile, trainerModel, processOnly);
