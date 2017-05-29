@@ -68,6 +68,8 @@ public class Snappy {
             learner.printLearnStats();
             learner.writeIncidents(summaryFile);
             learner.updateModel(true, modelFilePath.getAbsolutePath());
+            
+            learner.printAllGrams();
         }
     }
 

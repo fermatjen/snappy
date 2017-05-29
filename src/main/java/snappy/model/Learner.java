@@ -216,5 +216,14 @@ public class Learner extends AbstractLearner{
         
     }
     
+    public void printAllGrams(){
+        
+        System.out.println("Unigram Map\r\n"+unigramMap.toString()+"\r\n");
+        System.out.println("Bigram Map\r\n"+bigramMap.toString()+"\r\n");
+        System.out.println("Trigram Map\r\n"+trigramMap.toString()+"\r\n");
+        System.out.println("Quadgram Map\r\n"+quadgramMap.toString()+"\r\n");
+        System.out.println("POS Map\r\n"+verbMap.toString()+"\r\n");
+    }
+    
     
 }
