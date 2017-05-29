@@ -43,30 +43,22 @@ public class Snappy {
     private static String dataFile = null;
     private static String summaryFile = null;
     private static String modelFile = null;
+    private static String trainingFile = null;
 
     private static ArrayList filterList = new ArrayList();
     private static int processOnly = 50;
 
-    private static void populatefilterList() {
-
-        filterList.add("error");
-        filterList.add("error");
-        filterList.add("warning");
-        filterList.add("issue");
-        filterList.add("slowdown");
-        filterList.add("stuck");
-        filterList.add("stall");
-        filterList.add("terms");
-
-    }
+    private static String label = null;
 
     public static void doTraining() {
         //TRAINING
-        //Step 1: Creater Trainer Model
-        System.out.println("[Snappy] Initializing Labels and Clusters...");
-        populatefilterList();
+
+        //Load the training set
+        System.out.println("[Snappy] Loading the training set...");
+        loadTrainingFile(trainingFile);
+
         TrainerModel trainerModel = new TrainerModel();
-        trainerModel.setLabel("Issue");
+        trainerModel.setLabel(label);
         trainerModel.setClusters(filterList);
 
         //Start Learning
@@ -84,8 +76,45 @@ public class Snappy {
         learner.startTesting(modelFile);
         learner.printLearnStats();
     }
-    
-    public static void loadConfigFile(File configFile){
+
+    public static void loadTrainingFile(String trainingFile) {
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(trainingFile);
+            //Construct BufferedReader from InputStreamReader
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            String line = null;
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("#")) {
+                    continue;
+                }
+
+                int loc = line.indexOf("(");
+                if (loc != -1) {
+                    //Load labels and patterns
+                    label = line.substring(0, loc).trim();
+
+                    int roc = line.indexOf(")", loc);
+                    if (roc != -1) {
+                        String patterns = line.substring(loc + 1, roc);
+                        if (patterns.indexOf(",") != -1) {
+                            StringTokenizer stok = new StringTokenizer(patterns, ",");
+                            while (stok.hasMoreTokens()) {
+                                String pattern = stok.nextToken().trim();
+                                filterList.add(pattern);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void loadConfigFile(File configFile) {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(configFile);
@@ -106,6 +135,9 @@ public class Snappy {
 
                         if (configKey.equals("dataFile")) {
                             dataFile = configValue;
+                        }
+                        if (configKey.equals("trainingFile")) {
+                            trainingFile = configValue;
                         }
                         if (configKey.equals("summaryFile")) {
                             summaryFile = configValue;
@@ -130,9 +162,10 @@ public class Snappy {
     public static void main(String[] args) {
         try {
             //Load configuration file
-            File base = new File(Snappy.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
+            File base = new File(Snappy.class
+                    .getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
             File configFile = new File(base, "snappy.properties");
-            System.out.println("[Snappy] - Loading from "+configFile.getAbsolutePath());
+            System.out.println("[Snappy] - Loading from " + configFile.getAbsolutePath());
             if (!configFile.exists()) {
                 System.out.println("[Snappy] - FATAL: Configuration file not found! Shutting down!");
                 System.exit(0);
@@ -143,12 +176,13 @@ public class Snappy {
             }
 
             //Training
-            //doTraining();
-            
+            doTraining();
+
             //Testing
-            doTesting();
+            //doTesting();
         } catch (URISyntaxException ex) {
-            Logger.getLogger(Snappy.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Snappy.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
     }

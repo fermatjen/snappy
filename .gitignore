@@ -1,0 +1,4 @@
+*.lock
+*.bin
+*.jar
+.gradle/buildOutputCleanup/cache.properties
