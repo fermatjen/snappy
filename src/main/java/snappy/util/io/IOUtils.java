@@ -24,13 +24,16 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.Snappy;
 import snappy.model.NueralGramModel;
+import snappy.model.TrainerModel;
 import static snappy.util.text.StringUtils.replace;
 
 /**
@@ -51,6 +54,103 @@ public class IOUtils {
         }
         
         return null;
+    }
+    
+    public static ConfigModel loadConfigFile(File configFile) {
+        ConfigModel configModel = new ConfigModel();
+        
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(configFile);
+            //Construct BufferedReader from InputStreamReader
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            String line = null;
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("#")) {
+                    continue;
+                }
+                if (line.indexOf("=") != -1) {
+                    StringTokenizer stok = new StringTokenizer(line, "=");
+                    while (stok.hasMoreTokens()) {
+                        String configKey = stok.nextToken().trim();
+                        String configValue = stok.nextToken().trim();
+
+                        if (configKey.equals("dataFile")) {
+                            configModel.setDataFile(configValue);
+                        }
+                        if (configKey.equals("trainingFile")) {
+                            configModel.setTrainingFile(configValue);
+                        }
+                        if (configKey.equals("summaryFile")) {
+                            configModel.setSummaryFile(configValue);
+                        }
+                        if (configKey.equals("modelFile")) {
+                            configModel.setModelFile(configValue);
+                        }
+                        if (configKey.equals("processOnly")) {
+                            configModel.setProcessOnly(Integer.parseInt(configValue));
+                        }
+                    }
+                }
+            }
+
+            br.close();
+        } catch (IOException | NumberFormatException ex) {
+            System.out.println("FATAL - Snappy configuration file error: " + ex.getMessage());
+            System.exit(0);
+        }
+        
+        return configModel;
+    }
+
+    
+    public static TrainerModel loadTrainingFile(String trainingFile) {
+        
+        TrainerModel trainerModel = new TrainerModel();
+        ArrayList filterList = new ArrayList();
+        String label = null;
+        
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(trainingFile);
+            //Construct BufferedReader from InputStreamReader
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            String line = null;
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("#")) {
+                    continue;
+                }
+
+                int loc = line.indexOf("(");
+                if (loc != -1) {
+                    //Load labels and patterns
+                    label = line.substring(0, loc).trim();
+
+                    int roc = line.indexOf(")", loc);
+                    if (roc != -1) {
+                        String patterns = line.substring(loc + 1, roc);
+                        if (patterns.indexOf(",") != -1) {
+                            StringTokenizer stok = new StringTokenizer(patterns, ",");
+                            while (stok.hasMoreTokens()) {
+                                String pattern = stok.nextToken().trim();
+                                filterList.add(pattern);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        trainerModel.setLabel(label);
+        trainerModel.setClusters(filterList);
+        
+        return trainerModel;
     }
     
     public static void writeModelToFile(String modelFile, NueralGramModel nueralGramModel){

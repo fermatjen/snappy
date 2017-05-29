@@ -23,13 +23,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.model.Learner;
 import snappy.model.NueralGramModel;
 import snappy.model.TrainerModel;
+import snappy.util.io.ConfigModel;
+import static snappy.util.io.IOUtils.loadConfigFile;
+import static snappy.util.io.IOUtils.loadTrainingFile;
 
 /**
  *
@@ -55,11 +57,9 @@ public class Snappy {
 
         //Load the training set
         System.out.println("[Snappy] Loading the training set...");
-        loadTrainingFile(trainingFile);
-
-        TrainerModel trainerModel = new TrainerModel();
-        trainerModel.setLabel(label);
-        trainerModel.setClusters(filterList);
+        TrainerModel trainerModel = loadTrainingFile(trainingFile);
+        label = trainerModel.getLabel();
+        filterList = trainerModel.getClusters();
 
         //Start Learning
         Learner learner = new Learner(new NueralGramModel(), dataFile, trainerModel, processOnly);
@@ -77,88 +77,6 @@ public class Snappy {
         learner.printLearnStats();
     }
 
-    public static void loadTrainingFile(String trainingFile) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(trainingFile);
-            //Construct BufferedReader from InputStreamReader
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String line = null;
-
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.startsWith("#")) {
-                    continue;
-                }
-
-                int loc = line.indexOf("(");
-                if (loc != -1) {
-                    //Load labels and patterns
-                    label = line.substring(0, loc).trim();
-
-                    int roc = line.indexOf(")", loc);
-                    if (roc != -1) {
-                        String patterns = line.substring(loc + 1, roc);
-                        if (patterns.indexOf(",") != -1) {
-                            StringTokenizer stok = new StringTokenizer(patterns, ",");
-                            while (stok.hasMoreTokens()) {
-                                String pattern = stok.nextToken().trim();
-                                filterList.add(pattern);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public static void loadConfigFile(File configFile) {
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(configFile);
-            //Construct BufferedReader from InputStreamReader
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String line = null;
-
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.startsWith("#")) {
-                    continue;
-                }
-                if (line.indexOf("=") != -1) {
-                    StringTokenizer stok = new StringTokenizer(line, "=");
-                    while (stok.hasMoreTokens()) {
-                        String configKey = stok.nextToken().trim();
-                        String configValue = stok.nextToken().trim();
-
-                        if (configKey.equals("dataFile")) {
-                            dataFile = configValue;
-                        }
-                        if (configKey.equals("trainingFile")) {
-                            trainingFile = configValue;
-                        }
-                        if (configKey.equals("summaryFile")) {
-                            summaryFile = configValue;
-                        }
-                        if (configKey.equals("modelFile")) {
-                            modelFile = configValue;
-                        }
-                        if (configKey.equals("processOnly")) {
-                            processOnly = Integer.parseInt(configValue);
-                        }
-                    }
-                }
-            }
-
-            br.close();
-        } catch (IOException | NumberFormatException ex) {
-            System.out.println("FATAL - Snappy configuration file error: " + ex.getMessage());
-            System.exit(0);
-        }
-    }
-
     public static void main(String[] args) {
         try {
             //Load configuration file
@@ -171,7 +89,12 @@ public class Snappy {
                 System.exit(0);
             } else {
                 //Load the configuration file
-                loadConfigFile(configFile);
+                ConfigModel configModel = loadConfigFile(configFile);
+                dataFile = configModel.getDataFile();
+                summaryFile = configModel.getSummaryFile();
+                modelFile = configModel.getModelFile();
+                trainingFile = configModel.getTrainingFile();
+                processOnly = configModel.getProcessOnly();
 
             }
 
