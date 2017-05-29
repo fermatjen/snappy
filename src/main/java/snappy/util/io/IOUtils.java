@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package snappy.util.io;
 
 import java.io.BufferedReader;
@@ -41,24 +40,24 @@ import static snappy.util.text.StringUtils.replace;
  * @author fjenning
  */
 public class IOUtils {
-    
-    public static NueralGramModel readModelFromFile(String modelFile){
+
+    public static NueralGramModel readModelFromFile(String modelFile) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(modelFile));
-            NueralGramModel nueralGramModel = (NueralGramModel)ois.readObject();
+            NueralGramModel nueralGramModel = (NueralGramModel) ois.readObject();
             return nueralGramModel;
         } catch (IOException ex) {
             Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         return null;
     }
-    
+
     public static ConfigModel loadConfigFile(File configFile) {
         ConfigModel configModel = new ConfigModel();
-        
+
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(configFile);
@@ -101,17 +100,14 @@ public class IOUtils {
             System.out.println("FATAL - Snappy configuration file error: " + ex.getMessage());
             System.exit(0);
         }
-        
+
         return configModel;
     }
 
-    
-    public static TrainerModel loadTrainingFile(String trainingFile) {
-        
-        TrainerModel trainerModel = new TrainerModel();
-        ArrayList filterList = new ArrayList();
-        String label = null;
-        
+    public static ArrayList loadTrainingFile(String trainingFile) {
+
+        ArrayList trainerModelList = new ArrayList();
+
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(trainingFile);
@@ -128,7 +124,9 @@ public class IOUtils {
                 int loc = line.indexOf("(");
                 if (loc != -1) {
                     //Load labels and patterns
-                    label = line.substring(0, loc).trim();
+                    TrainerModel trainerModel = new TrainerModel();
+                    ArrayList filterList = new ArrayList();
+                    String label = line.substring(0, loc).trim();
 
                     int roc = line.indexOf(")", loc);
                     if (roc != -1) {
@@ -141,19 +139,21 @@ public class IOUtils {
                             }
                         }
                     }
+
+                    trainerModel.setLabel(label);
+                    trainerModel.setClusters(filterList);
+
+                    trainerModelList.add(trainerModel);
                 }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        
-        trainerModel.setLabel(label);
-        trainerModel.setClusters(filterList);
-        
-        return trainerModel;
+
+        return trainerModelList;
     }
-    
-    public static void writeModelToFile(String modelFile, NueralGramModel nueralGramModel){
+
+    public static void writeModelToFile(String modelFile, NueralGramModel nueralGramModel) {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFile));
             oos.writeObject(nueralGramModel);
@@ -163,7 +163,7 @@ public class IOUtils {
             Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void writeSummary(String dataFile, String summaryFile, ArrayList incidentList, int processOnly) {
 
         FileWriter writer = null;
@@ -243,5 +243,5 @@ public class IOUtils {
         }
 
     }
-    
+
 }

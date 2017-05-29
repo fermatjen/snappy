@@ -46,27 +46,29 @@ public class Snappy {
     private static String summaryFile = null;
     private static String modelFile = null;
     private static String trainingFile = null;
-
-    private static ArrayList filterList = new ArrayList();
     private static int processOnly = 50;
 
-    private static String label = null;
 
     public static void doTraining() {
         //TRAINING
 
         //Load the training set
         System.out.println("[Snappy] Loading the training set...");
-        TrainerModel trainerModel = loadTrainingFile(trainingFile);
-        label = trainerModel.getLabel();
-        filterList = trainerModel.getClusters();
 
-        //Start Learning
-        Learner learner = new Learner(new NueralGramModel(), dataFile, trainerModel, processOnly);
-        learner.startLearning();
-        learner.printLearnStats();
-        learner.writeIncidents(summaryFile);
-        learner.updateModel(true, modelFile);
+        //Get all trainer models
+        ArrayList trainerModelList = loadTrainingFile(trainingFile);
+        
+        for (int i = 0; i < trainerModelList.size(); i++) {
+            TrainerModel trainerModel = (TrainerModel) trainerModelList.get(i);
+            String label = trainerModel.getLabel();
+            File modelFilePath = new File(modelFile,"s_"+label+".ser");
+            //Start Learning
+            Learner learner = new Learner(new NueralGramModel(), dataFile, trainerModel, processOnly);
+            learner.startLearning();
+            learner.printLearnStats();
+            learner.writeIncidents(summaryFile);
+            learner.updateModel(true, modelFilePath.getAbsolutePath());
+        }
     }
 
     public static void doTesting() {
