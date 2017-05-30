@@ -16,10 +16,71 @@ Snappy, broadly, works in the following way:
 * Sentences are extracted from the Incidents list.
 * Each sentence in an incident is scored against the popularity of the NGrams so that the sentences are scored more if they have most frequently occurring "longer grams" than "shorter grams". Also, the sentences are scored based on POS heat maps.
 
-For building Snappy
+# Build
 
 ```
 gradle build
 ```
 
+# Test
 
+```
+gradle run
+```
+
+# Prepare dataset
+Sample dataset is available in the data directory. Every line in the dataset corresponds to an Incident. The labels file contains the taining set in the following form:
+
+```
+Label (phrase1, phrase2, phrasen)
+```
+
+# Training 
+
+```java
+        //Get all trainer models
+        ArrayList trainerModelList = loadTrainingFile(trainingFile);
+
+        for (int i = 0; i < trainerModelList.size(); i++) {
+            TrainerModel trainerModel = (TrainerModel) trainerModelList.get(i);
+            String label = trainerModel.getLabel();
+            label = replace(label, " ", "_", 0);
+            File modelFilePath = new File(modelFile, "s_" + label + ".ser");
+            //Start Learning
+            Learner learner = new Learner(new NueralGramModel(), dataFile, trainerModel, processOnly);
+            learner.startLearning();
+            learner.printLearnStats();
+            learner.writeIncidents(summaryFile);
+            learner.updateModel(true, modelFilePath.getAbsolutePath());
+
+            learner.printAllGrams();
+        }
+```
+
+# Testing
+
+```java
+        //Start testing
+        File modelFilePath = new File(modelFile);
+        File children[] = modelFilePath.listFiles();
+        ArrayList nueralGramModelList = new ArrayList();
+
+        for (int i = 0; i < children.length; i++) {
+            File mFile = children[i];
+            if (mFile.isFile()) {
+                String fpath = mFile.getAbsolutePath();
+                if (fpath.endsWith(".ser")) {
+                    Learner learner = new Learner(new NueralGramModel(), null, null, processOnly);
+                    learner.loadModels(fpath);
+                    learner.printLearnStats();
+                    //Get the nueral gram model
+                    NueralGramModel nueralGramModel = learner.getModel();
+                    nueralGramModelList.add(nueralGramModel);
+                }
+            }
+        }
+
+        //Write prediction results
+        boolean singleLabel = false;
+        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly, threshold, singleLabel);
+```
