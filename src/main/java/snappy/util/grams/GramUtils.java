@@ -54,6 +54,7 @@ public class GramUtils {
                 if (count >= processOnly) {
                     break;
                 }
+                line = line.replaceAll("\\p{Punct}+", "");
                 line = line.toLowerCase().trim();
 
                 //System.out.println(filterList.size());

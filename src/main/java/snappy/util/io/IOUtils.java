@@ -91,6 +91,9 @@ public class IOUtils {
                         if (configKey.equals("processOnly")) {
                             configModel.setProcessOnly(Integer.parseInt(configValue));
                         }
+                        if (configKey.equals("mode")) {
+                            configModel.setMode(configValue);
+                        }
                     }
                 }
             }
@@ -177,6 +180,7 @@ public class IOUtils {
                 if (count >= processOnly) {
                     break;
                 }
+                line = line.replaceAll("\\p{Punct}+", "");
                 linesList.add(line.trim());
                 count++;
             }
@@ -207,7 +211,7 @@ public class IOUtils {
                         break;
                     }
                     line = line.trim();
-
+                    line = line.replaceAll("\\p{Punct}+", "");
                     line = line.replaceAll(" . ", ". ");
 
                     String sumLine = "";

@@ -30,6 +30,7 @@ public class ConfigModel {
     private String modelFile = null;
     private String trainingFile = null;
     private int processOnly = 50;
+    private String mode = null;
 
     public String getDataFile() {
         return dataFile;
@@ -69,6 +70,14 @@ public class ConfigModel {
 
     public void setProcessOnly(int processOnly) {
         this.processOnly = processOnly;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
     
     
