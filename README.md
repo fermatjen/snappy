@@ -35,6 +35,30 @@ Sample dataset is available in the data directory. Every line in the dataset cor
 Label (phrase1, phrase2, phrasen)
 ```
 
+# Configure 
+Edit build/classes/snappy.properties file:
+
+```
+# Snappy Configuration File
+# This file contains the basic configuration
+# file to externally control Snappy.
+
+# File containing the raw text
+dataFile=C:\\SnappyGIT\\data\\data.csv
+
+# File that will be used to write the summary
+summaryFile=C:\\SnappyGIT\\data\\datasum.csv
+
+# The models file path where individual models are stored
+modelFile=C:\\SnappyGIT\\data\\
+
+# Training data set
+trainingFile = C:\\SnappyGIT\\data\\labels.txt
+
+# Process only these number of lines in the raw data file
+processOnly = 100
+```
+
 # Training 
 
 ```java
