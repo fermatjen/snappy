@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -49,7 +51,7 @@ public class Snappy {
     private static String modelFile = null;
     private static String trainingFile = null;
     private static int processOnly = 10;
-    
+
     private static final int threshold = 40;
 
     public static void doTraining() {
@@ -64,7 +66,7 @@ public class Snappy {
         for (int i = 0; i < trainerModelList.size(); i++) {
             TrainerModel trainerModel = (TrainerModel) trainerModelList.get(i);
             String label = trainerModel.getLabel();
-            label = replace(label," ","_",0);
+            label = replace(label, " ", "_", 0);
             File modelFilePath = new File(modelFile, "s_" + label + ".ser");
             //Start Learning
             Learner learner = new Learner(new NueralGramModel(), dataFile, trainerModel, processOnly);
@@ -98,14 +100,23 @@ public class Snappy {
                 }
             }
         }
-        
+
         //Write prediction results
         boolean singleLabel = false;
-        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly, threshold,  singleLabel);
-        
+        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly, threshold, singleLabel);
+
     }
 
     public static void main(String[] args) {
+
+        //Flush print stream
+        PrintStream err = System.err;
+        System.setErr(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) {
+            }
+        }));
+
         try {
             //Load configuration file
             File base = new File(Snappy.class
@@ -127,13 +138,15 @@ public class Snappy {
             }
 
             //Training
-            //doTraining();
+            doTraining();
             //Testing
-            doTesting();
+            //doTesting();
         } catch (URISyntaxException ex) {
             Logger.getLogger(Snappy.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
+        
+        System.setErr(err);
 
     }
 
