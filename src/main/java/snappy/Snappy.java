@@ -49,6 +49,8 @@ public class Snappy {
     private static String modelFile = null;
     private static String trainingFile = null;
     private static int processOnly = 10;
+    
+    private static final int threshold = 40;
 
     public static void doTraining() {
         //TRAINING
@@ -97,8 +99,9 @@ public class Snappy {
             }
         }
         
-        //Start prediction
-        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly);
+        //Write prediction results
+        boolean singleLabel = false;
+        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly, threshold,  singleLabel);
         
     }
 

@@ -25,11 +25,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import snappy.model.NLPModel;
 import snappy.model.NueralGramModel;
 import static snappy.ngrams.Scorer.getGramScore;
+import snappy.pos.POSScrapper;
 import static snappy.util.collections.Comparator.sortByComparator;
 import snappy.util.io.CSVUtils;
 import static snappy.util.io.IOUtils.getAllLinesFromFile;
+import static snappy.util.text.StringUtils.replace;
 
 /**
  *
@@ -37,9 +40,10 @@ import static snappy.util.io.IOUtils.getAllLinesFromFile;
  */
 public class Predictor {
 
-    public static void writePredictions(String dataFile, ArrayList nueralGramModelList, String outFile, int processOnly) {
+    public static void writePredictions(String dataFile, ArrayList nueralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel) {
 
         FileWriter outFileWriter = null;
+        POSScrapper posScrapper = new POSScrapper(new NLPModel());
 
         try {
             // Assuming that the gram and pos maps are filled, start
@@ -47,7 +51,13 @@ public class Predictor {
             outFileWriter = new FileWriter(outFile);
             ArrayList linesList = getAllLinesFromFile(dataFile, processOnly);
             for (int i = 0; i < linesList.size(); i++) {
+
                 String line = (String) linesList.get(i);
+
+                if (line.length() < threshold) {
+                    continue;
+                }
+
                 //Now get the best label
                 // Unpack Nueral Grams
                 HashMap nueralScoreMap = new HashMap();
@@ -67,15 +77,28 @@ public class Predictor {
 
                     double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
                     //Score for this nueralgram
-                    nueralScoreMap.put(label, (int) gramScore);
+                    //Eliminate weak biases
+                    if (gramScore > 1) {
+                        nueralScoreMap.put(label, (int) gramScore);
+                    }
                 }
 
-                Map<String, Integer> sortedNueralScoreMap = sortByComparator(nueralScoreMap, false);
-                Iterator i1 = sortedNueralScoreMap.keySet().iterator();
-                String predictedLabel = (String) i1.next();
+                if (nueralScoreMap.size() > 0) {
+                    Map<String, Integer> sortedNueralScoreMap = sortByComparator(nueralScoreMap, false);
+                    Iterator i1 = sortedNueralScoreMap.keySet().iterator();
+                    String predictedLabel = (String) i1.next();
 
-                //outFileWriter.write(predictedLabel+", \""+line+"\"\r\n");
-                CSVUtils.writeLine(outFileWriter, Arrays.asList(predictedLabel, line));
+                    //outFileWriter.write(predictedLabel+", \""+line+"\"\r\n");
+                    if (singleLabel) {
+                        line = replace(line, ",", " ", 0);
+                        CSVUtils.writeLine(outFileWriter, Arrays.asList(predictedLabel, line));
+                    } else {
+                        //Print all labels and their freqs
+                        String nueralScores = sortedNueralScoreMap.toString();
+                        nueralScores = replace(nueralScores, ",", " ", 0);
+                        CSVUtils.writeLine(outFileWriter, Arrays.asList(nueralScores, line));
+                    }
+                }
             }
         } catch (IOException ex) {
             Logger.getLogger(Predictor.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,14 +109,5 @@ public class Predictor {
                 Logger.getLogger(Predictor.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
     }
-
-    public String predictLabel(String line, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap) {
-
-        double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
-
-        return "NA";
-    }
-
 }
