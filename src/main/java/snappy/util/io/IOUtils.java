@@ -44,8 +44,8 @@ public class IOUtils {
     public static NeuralGramModel readModelFromFile(String modelFile) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(modelFile));
-            NeuralGramModel nueralGramModel = (NeuralGramModel) ois.readObject();
-            return nueralGramModel;
+            NeuralGramModel neuralGramModel = (NeuralGramModel) ois.readObject();
+            return neuralGramModel;
         } catch (IOException ex) {
             Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -166,10 +166,10 @@ public class IOUtils {
         return trainerModelList;
     }
 
-    public static void writeModelToFile(String modelFile, NeuralGramModel nueralGramModel) {
+    public static void writeModelToFile(String modelFile, NeuralGramModel neuralGramModel) {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFile));
-            oos.writeObject(nueralGramModel);
+            oos.writeObject(neuralGramModel);
             oos.flush();
             oos.close();
         } catch (IOException ex) {

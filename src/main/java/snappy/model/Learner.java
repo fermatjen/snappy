@@ -40,7 +40,7 @@ public class Learner extends AbstractLearner {
     private HashMap quadgramMap = new HashMap();
     private HashMap verbMap = new HashMap();
 
-    private NeuralGramModel nueralGramModel = null;
+    private NeuralGramModel neuralGramModel = null;
 
     private ArrayList incidentList = new ArrayList();
 
@@ -54,8 +54,8 @@ public class Learner extends AbstractLearner {
     
     private boolean processLemma = true;
 
-    public Learner(NeuralGramModel nueralGramModel, String dataFile, TrainerModel trainerModel, int processOnly, boolean processLemma) {
-        this.nueralGramModel = nueralGramModel;
+    public Learner(NeuralGramModel neuralGramModel, String dataFile, TrainerModel trainerModel, int processOnly, boolean processLemma) {
+        this.neuralGramModel = neuralGramModel;
         //Init class labels for learning
         this.dataFile = dataFile;
         this.trainerModel = trainerModel;
@@ -97,17 +97,17 @@ public class Learner extends AbstractLearner {
 
     public void loadModels(String modelFile) {
         
-        nueralGramModel = IOUtils.readModelFromFile(modelFile);
-        unigramMap = nueralGramModel.getUnigramMap();
-        bigramMap = nueralGramModel.getBigramMap();
-        trigramMap = nueralGramModel.getTrigramMap();
-        quadgramMap = nueralGramModel.getQuadgramMap();
-        verbMap = nueralGramModel.getVerbMap();
-        trainerModel = nueralGramModel.getTrainerModel();
+        neuralGramModel = IOUtils.readModelFromFile(modelFile);
+        unigramMap = neuralGramModel.getUnigramMap();
+        bigramMap = neuralGramModel.getBigramMap();
+        trigramMap = neuralGramModel.getTrigramMap();
+        quadgramMap = neuralGramModel.getQuadgramMap();
+        verbMap = neuralGramModel.getVerbMap();
+        trainerModel = neuralGramModel.getTrainerModel();
     }
     
     public NeuralGramModel getModel(){
-        return nueralGramModel;
+        return neuralGramModel;
     }
 
     public void printLearnStats() {
@@ -208,15 +208,15 @@ public class Learner extends AbstractLearner {
     public void updateModel(boolean overwrite, String outFile) {
 
         //Create a NeuralGramModel that can be persisted
-        nueralGramModel.setUnigramMap(unigramMap);
-        nueralGramModel.setBigramMap(bigramMap);
-        nueralGramModel.setTrigramMap(trigramMap);
-        nueralGramModel.setQuadgramMap(quadgramMap);
-        nueralGramModel.setVerbMap(verbMap);
-        nueralGramModel.setTrainerModel(trainerModel);
+        neuralGramModel.setUnigramMap(unigramMap);
+        neuralGramModel.setBigramMap(bigramMap);
+        neuralGramModel.setTrigramMap(trigramMap);
+        neuralGramModel.setQuadgramMap(quadgramMap);
+        neuralGramModel.setVerbMap(verbMap);
+        neuralGramModel.setTrainerModel(trainerModel);
 
         //Write model to file
-        IOUtils.writeModelToFile(outFile, nueralGramModel);
+        IOUtils.writeModelToFile(outFile, neuralGramModel);
 
     }
 

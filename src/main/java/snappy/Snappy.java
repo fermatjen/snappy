@@ -87,7 +87,7 @@ public class Snappy {
         //Start testing
         File modelFilePath = new File(modelFile);
         File children[] = modelFilePath.listFiles();
-        ArrayList nueralGramModelList = new ArrayList();
+        ArrayList neuralGramModelList = new ArrayList();
 
         for (int i = 0; i < children.length; i++) {
             File mFile = children[i];
@@ -97,16 +97,16 @@ public class Snappy {
                     Learner learner = new Learner(new NeuralGramModel(), null, null, processOnly, processLemma);
                     learner.loadModels(fpath);
                     learner.printLearnStats();
-                    //Get the nueral gram model
-                    NeuralGramModel nueralGramModel = learner.getModel();
-                    nueralGramModelList.add(nueralGramModel);
+                    //Get the neural gram model
+                    NeuralGramModel neuralGramModel = learner.getModel();
+                    neuralGramModelList.add(neuralGramModel);
                 }
             }
         }
 
         //Write prediction results
         boolean singleLabel = false;
-        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly, threshold, singleLabel, processLemma);
+        Predictor.writePredictions(dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singleLabel, processLemma);
 
     }
 

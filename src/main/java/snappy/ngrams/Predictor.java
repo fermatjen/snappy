@@ -40,10 +40,10 @@ import static snappy.util.text.StringUtils.replace;
  */
 public class Predictor {
 
-    public static void writePredictions(String dataFile, ArrayList nueralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel, boolean processLemma) {
+    public static void writePredictions(String dataFile, ArrayList neuralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel, boolean processLemma) {
 
         FileWriter outFileWriter = null;
-        POSScrapper posScrapper = new POSScrapper(new NLPModel());
+        //POSScrapper posScrapper = new POSScrapper(new NLPModel());
 
         try {
             // Assuming that the gram and pos maps are filled, start
@@ -59,33 +59,33 @@ public class Predictor {
                 }
 
                 //Now get the best label
-                // Unpack Nueral Grams
-                HashMap nueralScoreMap = new HashMap();
+                // Unpack Neural Grams
+                HashMap neuralScoreMap = new HashMap();
 
-                for (int j = 0; j < nueralGramModelList.size(); j++) {
+                for (int j = 0; j < neuralGramModelList.size(); j++) {
 
-                    NeuralGramModel nueralGramModel = (NeuralGramModel) nueralGramModelList.get(j);
+                    NeuralGramModel neuralGramModel = (NeuralGramModel) neuralGramModelList.get(j);
 
-                    HashMap unigramMap = (HashMap) nueralGramModel.getUnigramMap();
-                    HashMap bigramMap = (HashMap) nueralGramModel.getBigramMap();
-                    HashMap trigramMap = (HashMap) nueralGramModel.getTrigramMap();
-                    HashMap quadgramMap = (HashMap) nueralGramModel.getQuadgramMap();
-                    HashMap verbMap = (HashMap) nueralGramModel.getVerbMap();
+                    HashMap unigramMap = (HashMap) neuralGramModel.getUnigramMap();
+                    HashMap bigramMap = (HashMap) neuralGramModel.getBigramMap();
+                    HashMap trigramMap = (HashMap) neuralGramModel.getTrigramMap();
+                    HashMap quadgramMap = (HashMap) neuralGramModel.getQuadgramMap();
+                    HashMap verbMap = (HashMap) neuralGramModel.getVerbMap();
 
                     //Get class label
-                    String label = nueralGramModel.getTrainerModel().getLabel();
+                    String label = neuralGramModel.getTrainerModel().getLabel();
 
                     double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, processLemma);
-                    //Score for this nueralgram
+                    //Score for this neuralgram
                     //Eliminate weak biases
                     if (gramScore > 1) {
-                        nueralScoreMap.put(label, (int) gramScore);
+                        neuralScoreMap.put(label, (int) gramScore);
                     }
                 }
 
-                if (nueralScoreMap.size() > 0) {
-                    Map<String, Integer> sortedNueralScoreMap = sortByComparator(nueralScoreMap, false);
-                    Iterator i1 = sortedNueralScoreMap.keySet().iterator();
+                if (neuralScoreMap.size() > 0) {
+                    Map<String, Integer> sortedNeuralScoreMap = sortByComparator(neuralScoreMap, false);
+                    Iterator i1 = sortedNeuralScoreMap.keySet().iterator();
                     String predictedLabel = (String) i1.next();
 
                     //outFileWriter.write(predictedLabel+", \""+line+"\"\r\n");
@@ -94,9 +94,9 @@ public class Predictor {
                         CSVUtils.writeLine(outFileWriter, Arrays.asList(predictedLabel, line));
                     } else {
                         //Print all labels and their freqs
-                        String nueralScores = sortedNueralScoreMap.toString();
-                        nueralScores = replace(nueralScores, ",", " ", 0);
-                        CSVUtils.writeLine(outFileWriter, Arrays.asList(nueralScores, line));
+                        String neuralScores = sortedNeuralScoreMap.toString();
+                        neuralScores = replace(neuralScores, ",", " ", 0);
+                        CSVUtils.writeLine(outFileWriter, Arrays.asList(neuralScores, line));
                     }
                 }
             }
