@@ -31,7 +31,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.Snappy;
-import snappy.model.NueralGramModel;
+import snappy.model.NeuralGramModel;
 import snappy.model.TrainerModel;
 import static snappy.util.text.StringUtils.replace;
 
@@ -41,10 +41,10 @@ import static snappy.util.text.StringUtils.replace;
  */
 public class IOUtils {
 
-    public static NueralGramModel readModelFromFile(String modelFile) {
+    public static NeuralGramModel readModelFromFile(String modelFile) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(modelFile));
-            NueralGramModel nueralGramModel = (NueralGramModel) ois.readObject();
+            NeuralGramModel nueralGramModel = (NeuralGramModel) ois.readObject();
             return nueralGramModel;
         } catch (IOException ex) {
             Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
@@ -156,7 +156,7 @@ public class IOUtils {
         return trainerModelList;
     }
 
-    public static void writeModelToFile(String modelFile, NueralGramModel nueralGramModel) {
+    public static void writeModelToFile(String modelFile, NeuralGramModel nueralGramModel) {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFile));
             oos.writeObject(nueralGramModel);

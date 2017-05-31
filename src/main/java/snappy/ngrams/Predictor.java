@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.model.NLPModel;
-import snappy.model.NueralGramModel;
+import snappy.model.NeuralGramModel;
 import static snappy.ngrams.Scorer.getGramScore;
 import snappy.pos.POSScrapper;
 import static snappy.util.collections.Comparator.sortByComparator;
@@ -64,7 +64,7 @@ public class Predictor {
 
                 for (int j = 0; j < nueralGramModelList.size(); j++) {
 
-                    NueralGramModel nueralGramModel = (NueralGramModel) nueralGramModelList.get(j);
+                    NeuralGramModel nueralGramModel = (NeuralGramModel) nueralGramModelList.get(j);
 
                     HashMap unigramMap = (HashMap) nueralGramModel.getUnigramMap();
                     HashMap bigramMap = (HashMap) nueralGramModel.getBigramMap();

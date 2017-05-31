@@ -29,7 +29,7 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.model.Learner;
-import snappy.model.NueralGramModel;
+import snappy.model.NeuralGramModel;
 import snappy.model.TrainerModel;
 import snappy.ngrams.Predictor;
 import snappy.util.io.ConfigModel;
@@ -70,7 +70,7 @@ public class Snappy {
             label = replace(label, " ", "_", 0);
             File modelFilePath = new File(modelFile, "s_" + label + ".ser");
             //Start Learning
-            Learner learner = new Learner(new NueralGramModel(), dataFile, trainerModel, processOnly);
+            Learner learner = new Learner(new NeuralGramModel(), dataFile, trainerModel, processOnly);
             learner.startLearning();
             learner.printLearnStats();
             learner.writeIncidents(summaryFile);
@@ -92,11 +92,11 @@ public class Snappy {
             if (mFile.isFile()) {
                 String fpath = mFile.getAbsolutePath();
                 if (fpath.endsWith(".ser")) {
-                    Learner learner = new Learner(new NueralGramModel(), null, null, processOnly);
+                    Learner learner = new Learner(new NeuralGramModel(), null, null, processOnly);
                     learner.loadModels(fpath);
                     learner.printLearnStats();
                     //Get the nueral gram model
-                    NueralGramModel nueralGramModel = learner.getModel();
+                    NeuralGramModel nueralGramModel = learner.getModel();
                     nueralGramModelList.add(nueralGramModel);
                 }
             }

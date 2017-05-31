@@ -40,7 +40,7 @@ public class Learner extends AbstractLearner {
     private HashMap quadgramMap = new HashMap();
     private HashMap verbMap = new HashMap();
 
-    private NueralGramModel nueralGramModel = null;
+    private NeuralGramModel nueralGramModel = null;
 
     private ArrayList incidentList = new ArrayList();
 
@@ -52,7 +52,7 @@ public class Learner extends AbstractLearner {
 
     private String dataFile = null;
 
-    public Learner(NueralGramModel nueralGramModel, String dataFile, TrainerModel trainerModel, int processOnly) {
+    public Learner(NeuralGramModel nueralGramModel, String dataFile, TrainerModel trainerModel, int processOnly) {
         this.nueralGramModel = nueralGramModel;
         //Init class labels for learning
         this.dataFile = dataFile;
@@ -103,7 +103,7 @@ public class Learner extends AbstractLearner {
         trainerModel = nueralGramModel.getTrainerModel();
     }
     
-    public NueralGramModel getModel(){
+    public NeuralGramModel getModel(){
         return nueralGramModel;
     }
 
@@ -204,7 +204,7 @@ public class Learner extends AbstractLearner {
     @Override
     public void updateModel(boolean overwrite, String outFile) {
 
-        //Create a NueralGramModel that can be persisted
+        //Create a NeuralGramModel that can be persisted
         nueralGramModel.setUnigramMap(unigramMap);
         nueralGramModel.setBigramMap(bigramMap);
         nueralGramModel.setTrigramMap(trigramMap);
