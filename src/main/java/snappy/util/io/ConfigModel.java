@@ -31,6 +31,15 @@ public class ConfigModel {
     private String trainingFile = null;
     private int processOnly = 50;
     private String mode = null;
+    private String silent =null;
+
+    public String getSilent() {
+        return silent;
+    }
+
+    public void setSilent(String silent) {
+        this.silent = silent;
+    }
 
     public String getDataFile() {
         return dataFile;

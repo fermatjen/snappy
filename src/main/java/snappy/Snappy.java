@@ -52,6 +52,7 @@ public class Snappy {
     private static String trainingFile = null;
     private static int processOnly = 10;
     private static String mode = null;
+    private static String silent = null;
 
     private static final int threshold = 40;
 
@@ -110,22 +111,17 @@ public class Snappy {
 
     public static void main(String[] args) {
 
-        //Flush print stream
         PrintStream err = System.err;
-        System.setErr(new PrintStream(new OutputStream() {
-            @Override
-            public void write(int b) {
-            }
-        }));
-
+        PrintStream out = System.out;
+        
         try {
             //Load configuration file
             File base = new File(Snappy.class
                     .getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
             File configFile = new File(base, "snappy.properties");
-            System.out.println("[Snappy] Loading from " + configFile.getAbsolutePath());
+            //System.out.println("[Snappy] Loading from " + configFile.getAbsolutePath());
             if (!configFile.exists()) {
-                System.out.println("[Snappy] FATAL: Configuration file not found! Shutting down!");
+                System.out.println("[Snappy] FATAL: Configuration file not found at "+configFile.getAbsolutePath());
                 System.exit(0);
             } else {
                 //Load the configuration file
@@ -136,22 +132,41 @@ public class Snappy {
                 trainingFile = configModel.getTrainingFile();
                 processOnly = configModel.getProcessOnly();
                 mode = (configModel.getMode()).toLowerCase().trim();
-
+                silent = (configModel.getSilent()).toLowerCase().trim();
             }
 
-            if(mode.equals("testing")){
-                doTesting();
-            }
-            else if(mode.equals("training")){
-                doTraining();
+            if (silent.equals("yes")) {
+                //Flush print stream
+                System.setErr(new PrintStream(new OutputStream() {
+                    @Override
+                    public void write(int b) {
+                    }
+                }));
+                //Flush print stream
+                System.setOut(new PrintStream(new OutputStream() {
+                    @Override
+                    public void write(int b) {
+                    }
+                }));
             }
             
+            System.out.println("[Snappy] Loading from " + configFile.getAbsolutePath());
+
+            if (mode.equals("testing")) {
+                doTesting();
+            } else if (mode.equals("training")) {
+                doTraining();
+            }
+
         } catch (URISyntaxException ex) {
             Logger.getLogger(Snappy.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
-        
-        System.setErr(err);
+
+        if (silent.equals("yes")) {
+            System.setErr(err);
+            System.setOut(out);
+        }
 
     }
 

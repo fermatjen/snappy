@@ -94,6 +94,9 @@ public class IOUtils {
                         if (configKey.equals("mode")) {
                             configModel.setMode(configValue);
                         }
+                         if (configKey.equals("silent")) {
+                            configModel.setSilent(configValue);
+                        }
                     }
                 }
             }
