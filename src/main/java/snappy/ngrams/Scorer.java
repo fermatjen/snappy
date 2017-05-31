@@ -65,11 +65,12 @@ public class Scorer {
         double score = 0;
         String line = "";
         NLPModel nlpModel = null;
+        StanfordCoreNLP pipeline = null;
 
         if (processLemma) {
             //Lemmatize sentence
             nlpModel = new NLPModel();
-            StanfordCoreNLP pipeline = nlpModel.getPipeline();
+            pipeline = nlpModel.getPipeline();
             Annotation document = pipeline.process(oline);
 
             for (CoreMap sentence : document.get(SentencesAnnotation.class)) {
@@ -93,8 +94,7 @@ public class Scorer {
 
             if (processLemma) {
                 //Get lemma
-                StanfordCoreNLP pipeline1 = nlpModel.getPipeline();
-                Annotation document1 = pipeline1.process(gram);
+                Annotation document1 = pipeline.process(gram);
                 for (CoreMap sentence1 : document1.get(SentencesAnnotation.class)) {
                     for (CoreLabel token1 : sentence1.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
@@ -128,8 +128,7 @@ public class Scorer {
 
             if (processLemma) {
                 //Get lemma
-                StanfordCoreNLP pipelinev = nlpModel.getPipeline();
-                Annotation documentv = pipelinev.process(gram);
+                Annotation documentv = pipeline.process(gram);
                 for (CoreMap sentencev : documentv.get(SentencesAnnotation.class)) {
                     for (CoreLabel tokenv : sentencev.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
@@ -159,8 +158,7 @@ public class Scorer {
 
             if (processLemma) {
                 //Get lemma
-                StanfordCoreNLP pipeline2 = nlpModel.getPipeline();
-                Annotation document2 = pipeline2.process(gram);
+                Annotation document2 = pipeline.process(gram);
                 for (CoreMap sentence2 : document2.get(SentencesAnnotation.class)) {
                     for (CoreLabel token2 : sentence2.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
@@ -179,7 +177,7 @@ public class Scorer {
 
                 double s = (c1 * 2) + (gram.length() * 0.15);
                 score = score + s;
-                System.out.println("         Match (2): " + gram + " (score: +" + (s));
+                System.out.println("         Match (2): " + gram + " (score: +" + (s)+")");
             }
         }
         Iterator i3 = trigramMap.keySet().iterator();
@@ -189,8 +187,7 @@ public class Scorer {
 
             if (processLemma) {
                 //Get lemma
-                StanfordCoreNLP pipeline3 = nlpModel.getPipeline();
-                Annotation document3 = pipeline3.process(gram);
+                Annotation document3 = pipeline.process(gram);
                 for (CoreMap sentence3 : document3.get(SentencesAnnotation.class)) {
                     for (CoreLabel token3 : sentence3.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
@@ -209,7 +206,7 @@ public class Scorer {
 
                 double s = (c1 * 3) + (gram.length() * 0.2);
                 score = score + s;
-                System.out.println("         Match (3): " + gram + " (score: +" + (s));
+                System.out.println("         Match (3): " + gram + " (score: +" + (s)+")");
             }
         }
         Iterator i4 = quadgramMap.keySet().iterator();
@@ -219,8 +216,7 @@ public class Scorer {
 
             if (processLemma) {
                 //Get lemma
-                StanfordCoreNLP pipeline4 = nlpModel.getPipeline();
-                Annotation document4 = pipeline4.process(gram);
+                Annotation document4 = pipeline.process(gram);
                 for (CoreMap sentence4 : document4.get(SentencesAnnotation.class)) {
                     for (CoreLabel token4 : sentence4.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
@@ -239,7 +235,7 @@ public class Scorer {
 
                 double s = (c1 * 4) + (gram.length() * 0.6);
                 score = score + s;
-                System.out.println("         Match (4): " + gram + " (score: +" + (s));
+                System.out.println("         Match (4): " + gram + " (score: +" + (s)+")");
             }
         }
 
