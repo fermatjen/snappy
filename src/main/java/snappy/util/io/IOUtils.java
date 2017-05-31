@@ -98,10 +98,17 @@ public class IOUtils {
                             configModel.setSilent(configValue);
                         }
                         if (configKey.equals("fastmode")) {
-                            if(configValue.toLowerCase().trim().equals("yes")){
+                            if (configValue.toLowerCase().trim().equals("yes")) {
                                 configModel.setFastmode(true);
-                            }else if(configValue.toLowerCase().trim().equals("no")){
+                            } else if (configValue.toLowerCase().trim().equals("no")) {
                                 configModel.setFastmode(false);
+                            }
+                        }
+                        if (configKey.equals("singlelabel")) {
+                            if (configValue.toLowerCase().trim().equals("yes")) {
+                                configModel.setSinglelabel(true);
+                            } else if (configValue.toLowerCase().trim().equals("no")) {
+                                configModel.setSinglelabel(false);
                             }
                         }
                     }
@@ -177,10 +184,10 @@ public class IOUtils {
         }
     }
 
-    public static ArrayList getAllLinesFromFile(String dataFile, int processOnly) {
+    public static ArrayList getAllLinesFromFile(String dataFile, int processOnly, boolean canAlterInstance) {
 
         ArrayList linesList = new ArrayList();
-        
+
         try (BufferedReader br = new BufferedReader(new FileReader(new File(dataFile)))) {
             String line;
 
@@ -190,15 +197,17 @@ public class IOUtils {
                 if (count >= processOnly) {
                     break;
                 }
-                line = line.replaceAll("\\s+", " ");
-                line = line.replaceAll("\\p{Punct}+", "");
+                if (canAlterInstance) {
+                    line = line.replaceAll("\\s+", " ");
+                    line = line.replaceAll("\\p{Punct}+", "");
+                }
                 linesList.add(line.trim());
                 count++;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
+
         return linesList;
 
     }

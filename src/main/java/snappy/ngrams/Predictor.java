@@ -49,7 +49,7 @@ public class Predictor {
             // Assuming that the gram and pos maps are filled, start
             // scoring the input dataSet
             outFileWriter = new FileWriter(outFile);
-            ArrayList linesList = getAllLinesFromFile(dataFile, processOnly);
+            ArrayList linesList = getAllLinesFromFile(dataFile, processOnly, false);
             for (int i = 0; i < linesList.size(); i++) {
 
                 String line = (String) linesList.get(i);

@@ -5,7 +5,7 @@ A Java ML API for compacting and classifying user comments. Snappy is based on a
 * Train models to classify text
 * Test models on text
 
-Snappy's core engine is based on a Nueral Gram Model that can extract and score word grams and POS grams along with their scores. Unlike conventional ML techniques, Snappy is based on a unique combinational approach for classifying text. 
+Snappy's core engine is based on a Neural Gram Model that can extract and score word grams and POS grams along with their scores. Unlike conventional ML techniques, Snappy is based on a unique combinational approach for classifying text. 
 
 Snappy, broadly, works in the following way:
 
@@ -71,7 +71,7 @@ processOnly = 100
             label = replace(label, " ", "_", 0);
             File modelFilePath = new File(modelFile, "s_" + label + ".ser");
             //Start Learning
-            Learner learner = new Learner(new NueralGramModel(), dataFile, trainerModel, processOnly);
+            Learner learner = new Learner(new NeuralGramModel(), dataFile, trainerModel, processOnly);
             learner.startLearning();
             learner.printLearnStats();
             learner.writeIncidents(summaryFile);
@@ -87,24 +87,24 @@ processOnly = 100
         //Start testing
         File modelFilePath = new File(modelFile);
         File children[] = modelFilePath.listFiles();
-        ArrayList nueralGramModelList = new ArrayList();
+        ArrayList neuralGramModelList = new ArrayList();
 
         for (int i = 0; i < children.length; i++) {
             File mFile = children[i];
             if (mFile.isFile()) {
                 String fpath = mFile.getAbsolutePath();
                 if (fpath.endsWith(".ser")) {
-                    Learner learner = new Learner(new NueralGramModel(), null, null, processOnly);
+                    Learner learner = new Learner(new NeuralGramModel(), null, null, processOnly);
                     learner.loadModels(fpath);
                     learner.printLearnStats();
-                    //Get the nueral gram model
-                    NueralGramModel nueralGramModel = learner.getModel();
-                    nueralGramModelList.add(nueralGramModel);
+                    //Get the neural gram model
+                    NeuralGramModel neuralGramModel = learner.getModel();
+                    neuralGramModelList.add(neuralGramModel);
                 }
             }
         }
 
         //Write prediction results
         boolean singleLabel = false;
-        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly, threshold, singleLabel);
+        Predictor.writePredictions(dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singleLabel);
 ```

@@ -33,6 +33,15 @@ public class ConfigModel {
     private String mode = null;
     private String silent = null;
     private boolean fastmode = false;
+    private boolean singlelabel = true;
+
+    public boolean isSinglelabel() {
+        return singlelabel;
+    }
+
+    public void setSinglelabel(boolean singlelabel) {
+        this.singlelabel = singlelabel;
+    }
 
     public boolean isFastmode() {
         return fastmode;

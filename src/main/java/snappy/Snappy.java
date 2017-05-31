@@ -54,6 +54,7 @@ public class Snappy {
     private static String mode = null;
     private static String silent = null;
     private static boolean processLemma = true;
+    private static boolean singlelabel = true;
 
     private static final int threshold = 40;
 
@@ -105,8 +106,7 @@ public class Snappy {
         }
 
         //Write prediction results
-        boolean singleLabel = false;
-        Predictor.writePredictions(dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singleLabel, processLemma);
+        Predictor.writePredictions(dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singlelabel, processLemma);
 
     }
 
@@ -135,6 +135,7 @@ public class Snappy {
                 mode = (configModel.getMode()).toLowerCase().trim();
                 silent = (configModel.getSilent()).toLowerCase().trim();
                 processLemma = !configModel.isFastmode();
+                singlelabel = configModel.isSinglelabel();
             }
 
             if (silent.equals("yes")) {
