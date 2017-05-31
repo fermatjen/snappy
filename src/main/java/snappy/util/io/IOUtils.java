@@ -190,6 +190,7 @@ public class IOUtils {
                 if (count >= processOnly) {
                     break;
                 }
+                line = line.replaceAll("\\s+", " ");
                 line = line.replaceAll("\\p{Punct}+", "");
                 linesList.add(line.trim());
                 count++;
@@ -221,6 +222,7 @@ public class IOUtils {
                         break;
                     }
                     line = line.trim();
+                    line = line.replaceAll("\\s+", " ");
                     line = line.replaceAll("\\p{Punct}+", "");
                     line = line.replaceAll(" . ", ". ");
 

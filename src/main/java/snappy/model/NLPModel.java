@@ -42,7 +42,7 @@ public class NLPModel {
         tlp = new PennTreebankLanguagePack();
         gsf = tlp.grammaticalStructureFactory();
         props = new Properties();
-        props.put("annotators", "tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+        props.put("annotators", "tokenize, ssplit, pos, lemma");
         pipeline = new StanfordCoreNLP(props, false);
     }
 

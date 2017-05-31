@@ -69,8 +69,6 @@ public class Scorer {
         if (processLemma) {
             //Lemmatize sentence
             nlpModel = new NLPModel();
-            Properties props = nlpModel.getProps();
-            props.put("annotators", "tokenize, ssplit, pos, lemma");
             StanfordCoreNLP pipeline = nlpModel.getPipeline();
             Annotation document = pipeline.process(oline);
 
@@ -100,7 +98,7 @@ public class Scorer {
                 for (CoreMap sentence1 : document1.get(SentencesAnnotation.class)) {
                     for (CoreLabel token1 : sentence1.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
-                        lgram = token1.get(LemmaAnnotation.class);
+                        lgram = lgram +" "+token1.get(LemmaAnnotation.class);
                         //System.out.println("Word :" + word);
                         //System.out.println("Lemma :" + gram);
 
@@ -109,13 +107,13 @@ public class Scorer {
             } else {
                 lgram = gram;
             }
-
+            lgram = lgram.trim();
             if (line.contains(lgram)) {
 
                 int c1 = (int) unigramMap.get(gram);
                 double s = (c1 * 1) + (gram.length() * 0.05);
                 score = score + s;
-                //System.out.println("         Match (1): " + gram + " (score: +" + (s)+")");
+                System.out.println("         Match (1): " + gram + " (score: +" + (s)+")");
             }
         }
 
@@ -135,7 +133,7 @@ public class Scorer {
                 for (CoreMap sentencev : documentv.get(SentencesAnnotation.class)) {
                     for (CoreLabel tokenv : sentencev.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
-                        lgram = tokenv.get(LemmaAnnotation.class);
+                        lgram = lgram +" "+tokenv.get(LemmaAnnotation.class);
                         //System.out.println("Word :" + word);
                         //System.out.println("Lemma :" + gram);
 
@@ -144,13 +142,13 @@ public class Scorer {
             } else {
                 lgram = gram;
             }
-
+            lgram = lgram.trim();
             if (line.contains(lgram)) {
 
                 int c1 = (int) verbMap.get(gram);
                 double s = (c1 * 1) + (gram.length() * 0.05);
                 score = score + s;
-                //System.out.println("         Match (1): " + gram + " (score: +" + (s)+")");
+                System.out.println("         Match (V): " + gram + " (score: +" + (s)+")");
             }
         }
 
@@ -166,7 +164,7 @@ public class Scorer {
                 for (CoreMap sentence2 : document2.get(SentencesAnnotation.class)) {
                     for (CoreLabel token2 : sentence2.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
-                        lgram = token2.get(LemmaAnnotation.class);
+                        lgram = lgram +" "+token2.get(LemmaAnnotation.class);
                         //System.out.println("Word :" + word);
                         //System.out.println("Lemma :" + gram);
 
@@ -175,13 +173,13 @@ public class Scorer {
             } else {
                 lgram = gram;
             }
-
+            lgram = lgram.trim();
             if (line.contains(lgram)) {
                 int c1 = (int) bigramMap.get(gram);
 
                 double s = (c1 * 2) + (gram.length() * 0.15);
                 score = score + s;
-                //System.out.println("         Match (2): " + gram + " (score: +" + (s));
+                System.out.println("         Match (2): " + gram + " (score: +" + (s));
             }
         }
         Iterator i3 = trigramMap.keySet().iterator();
@@ -196,7 +194,7 @@ public class Scorer {
                 for (CoreMap sentence3 : document3.get(SentencesAnnotation.class)) {
                     for (CoreLabel token3 : sentence3.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
-                        lgram = token3.get(LemmaAnnotation.class);
+                        lgram = lgram +" "+token3.get(LemmaAnnotation.class);
                         //System.out.println("Word :" + word);
                         //System.out.println("Lemma :" + gram);
 
@@ -205,13 +203,13 @@ public class Scorer {
             } else {
                 lgram = gram;
             }
-
+            lgram = lgram.trim();
             if (line.contains(lgram)) {
                 int c1 = (int) trigramMap.get(gram);
 
                 double s = (c1 * 3) + (gram.length() * 0.2);
                 score = score + s;
-                //System.out.println("         Match (3): " + gram + " (score: +" + (s));
+                System.out.println("         Match (3): " + gram + " (score: +" + (s));
             }
         }
         Iterator i4 = quadgramMap.keySet().iterator();
@@ -226,7 +224,7 @@ public class Scorer {
                 for (CoreMap sentence4 : document4.get(SentencesAnnotation.class)) {
                     for (CoreLabel token4 : sentence4.get(TokensAnnotation.class)) {
                         //String word = token.get(TextAnnotation.class);
-                        lgram = token4.get(LemmaAnnotation.class);
+                        lgram = lgram +" "+token4.get(LemmaAnnotation.class);
                         //System.out.println("Word :" + word);
                         //System.out.println("Lemma :" + gram);
 
@@ -235,13 +233,13 @@ public class Scorer {
             } else {
                 lgram = gram;
             }
-
+            lgram = lgram.trim();
             if (line.contains(lgram)) {
                 int c1 = (int) quadgramMap.get(gram);
 
                 double s = (c1 * 4) + (gram.length() * 0.6);
                 score = score + s;
-                //System.out.println("         Match (4): " + gram + " (score: +" + (s));
+                System.out.println("         Match (4): " + gram + " (score: +" + (s));
             }
         }
 
