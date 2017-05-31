@@ -94,8 +94,15 @@ public class IOUtils {
                         if (configKey.equals("mode")) {
                             configModel.setMode(configValue);
                         }
-                         if (configKey.equals("silent")) {
+                        if (configKey.equals("silent")) {
                             configModel.setSilent(configValue);
+                        }
+                        if (configKey.equals("fastmode")) {
+                            if(configValue.toLowerCase().trim().equals("yes")){
+                                configModel.setFastmode(true);
+                            }else if(configValue.toLowerCase().trim().equals("no")){
+                                configModel.setFastmode(false);
+                            }
                         }
                     }
                 }

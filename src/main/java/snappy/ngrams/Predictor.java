@@ -40,7 +40,7 @@ import static snappy.util.text.StringUtils.replace;
  */
 public class Predictor {
 
-    public static void writePredictions(String dataFile, ArrayList nueralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel) {
+    public static void writePredictions(String dataFile, ArrayList nueralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel, boolean processLemma) {
 
         FileWriter outFileWriter = null;
         POSScrapper posScrapper = new POSScrapper(new NLPModel());
@@ -75,7 +75,7 @@ public class Predictor {
                     //Get class label
                     String label = nueralGramModel.getTrainerModel().getLabel();
 
-                    double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
+                    double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, processLemma);
                     //Score for this nueralgram
                     //Eliminate weak biases
                     if (gramScore > 1) {

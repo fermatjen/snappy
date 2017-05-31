@@ -31,7 +31,16 @@ public class ConfigModel {
     private String trainingFile = null;
     private int processOnly = 50;
     private String mode = null;
-    private String silent =null;
+    private String silent = null;
+    private boolean fastmode = false;
+
+    public boolean isFastmode() {
+        return fastmode;
+    }
+
+    public void setFastmode(boolean fastmode) {
+        this.fastmode = fastmode;
+    }
 
     public String getSilent() {
         return silent;

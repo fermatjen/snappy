@@ -51,14 +51,17 @@ public class Learner extends AbstractLearner {
     private int processOnly = 100;
 
     private String dataFile = null;
+    
+    private boolean processLemma = true;
 
-    public Learner(NeuralGramModel nueralGramModel, String dataFile, TrainerModel trainerModel, int processOnly) {
+    public Learner(NeuralGramModel nueralGramModel, String dataFile, TrainerModel trainerModel, int processOnly, boolean processLemma) {
         this.nueralGramModel = nueralGramModel;
         //Init class labels for learning
         this.dataFile = dataFile;
         this.trainerModel = trainerModel;
         posScrapper = new POSScrapper(new NLPModel());
         this.processOnly = processOnly;
+        this.processLemma = processLemma;
     }
 
     @Override
@@ -69,7 +72,7 @@ public class Learner extends AbstractLearner {
         loadGramsFromIncidentList();
 
         //Second, score all grams
-        incidentList = scoreAllGrams(incidentList, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
+        incidentList = scoreAllGrams(incidentList, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, processLemma);
 
         //Third, Re-populate grams
         loadGramsFromIncidentList();

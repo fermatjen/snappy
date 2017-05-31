@@ -53,6 +53,7 @@ public class Snappy {
     private static int processOnly = 10;
     private static String mode = null;
     private static String silent = null;
+    private static boolean processLemma = true;
 
     private static final int threshold = 40;
 
@@ -71,7 +72,7 @@ public class Snappy {
             label = replace(label, " ", "_", 0);
             File modelFilePath = new File(modelFile, "s_" + label + ".ser");
             //Start Learning
-            Learner learner = new Learner(new NeuralGramModel(), dataFile, trainerModel, processOnly);
+            Learner learner = new Learner(new NeuralGramModel(), dataFile, trainerModel, processOnly, processLemma);
             learner.startLearning();
             learner.printLearnStats();
             learner.writeIncidents(summaryFile);
@@ -93,7 +94,7 @@ public class Snappy {
             if (mFile.isFile()) {
                 String fpath = mFile.getAbsolutePath();
                 if (fpath.endsWith(".ser")) {
-                    Learner learner = new Learner(new NeuralGramModel(), null, null, processOnly);
+                    Learner learner = new Learner(new NeuralGramModel(), null, null, processOnly, processLemma);
                     learner.loadModels(fpath);
                     learner.printLearnStats();
                     //Get the nueral gram model
@@ -105,7 +106,7 @@ public class Snappy {
 
         //Write prediction results
         boolean singleLabel = false;
-        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly, threshold, singleLabel);
+        Predictor.writePredictions(dataFile, nueralGramModelList, summaryFile, processOnly, threshold, singleLabel, processLemma);
 
     }
 
@@ -133,6 +134,7 @@ public class Snappy {
                 processOnly = configModel.getProcessOnly();
                 mode = (configModel.getMode()).toLowerCase().trim();
                 silent = (configModel.getSilent()).toLowerCase().trim();
+                processLemma = !configModel.isFastmode();
             }
 
             if (silent.equals("yes")) {
