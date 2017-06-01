@@ -37,6 +37,9 @@ public class NLPModel {
     private StanfordCoreNLP pipeline = null;
     private Properties props = null;
 
+    /**
+     *
+     */
     public NLPModel() {
         lp = LexicalizedParser.loadModel("edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz");
         tlp = new PennTreebankLanguagePack();
@@ -46,42 +49,82 @@ public class NLPModel {
         pipeline = new StanfordCoreNLP(props, false);
     }
 
+    /**
+     *
+     * @return
+     */
     public LexicalizedParser getLp() {
         return lp;
     }
 
+    /**
+     *
+     * @param lp
+     */
     public void setLp(LexicalizedParser lp) {
         this.lp = lp;
     }
 
+    /**
+     *
+     * @return
+     */
     public TreebankLanguagePack getTlp() {
         return tlp;
     }
 
+    /**
+     *
+     * @param tlp
+     */
     public void setTlp(TreebankLanguagePack tlp) {
         this.tlp = tlp;
     }
 
+    /**
+     *
+     * @return
+     */
     public GrammaticalStructureFactory getGsf() {
         return gsf;
     }
 
+    /**
+     *
+     * @param gsf
+     */
     public void setGsf(GrammaticalStructureFactory gsf) {
         this.gsf = gsf;
     }
 
+    /**
+     *
+     * @return
+     */
     public StanfordCoreNLP getPipeline() {
         return pipeline;
     }
 
+    /**
+     *
+     * @param pipeline
+     */
     public void setPipeline(StanfordCoreNLP pipeline) {
         this.pipeline = pipeline;
     }
 
+    /**
+     *
+     * @return
+     */
     public Properties getProps() {
         return props;
     }
 
+    /**
+     *
+     * @param props
+     */
     public void setProps(Properties props) {
         this.props = props;
     }

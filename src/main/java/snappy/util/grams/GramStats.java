@@ -27,6 +27,14 @@ import static snappy.util.collections.Comparator.sortByComparator;
  */
 public class GramStats {
 
+    /**
+     *
+     * @param unigramMap
+     * @param bigramMap
+     * @param trigramMap
+     * @param quadgramMap
+     * @param verbMap
+     */
     public static void printGramStats(HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap) {
 
         Map<String, Integer> sortedUnigramMap = sortByComparator(unigramMap, false);

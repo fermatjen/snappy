@@ -20,14 +20,31 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
+/**
+ *
+ * @author fjenning
+ */
 public class CSVUtils {
 
     private static final char DEFAULT_SEPARATOR = ',';
 
+    /**
+     *
+     * @param w
+     * @param values
+     * @throws IOException
+     */
     public static void writeLine(Writer w, List<String> values) throws IOException {
         writeLine(w, values, DEFAULT_SEPARATOR, ' ');
     }
 
+    /**
+     *
+     * @param w
+     * @param values
+     * @param separators
+     * @throws IOException
+     */
     public static void writeLine(Writer w, List<String> values, char separators) throws IOException {
         writeLine(w, values, separators, ' ');
     }
@@ -42,6 +59,14 @@ public class CSVUtils {
 
     }
 
+    /**
+     *
+     * @param w
+     * @param values
+     * @param separators
+     * @param customQuote
+     * @throws IOException
+     */
     public static void writeLine(Writer w, List<String> values, char separators, char customQuote) throws IOException {
 
         boolean first = true;

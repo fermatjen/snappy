@@ -54,6 +54,14 @@ public class Learner extends AbstractLearner {
     
     private boolean processLemma = true;
 
+    /**
+     *
+     * @param neuralGramModel
+     * @param dataFile
+     * @param trainerModel
+     * @param processOnly
+     * @param processLemma
+     */
     public Learner(NeuralGramModel neuralGramModel, String dataFile, TrainerModel trainerModel, int processOnly, boolean processLemma) {
         this.neuralGramModel = neuralGramModel;
         //Init class labels for learning
@@ -86,15 +94,26 @@ public class Learner extends AbstractLearner {
 
     }
 
+    /**
+     *
+     * @param summaryFile
+     */
     public void writeIncidents(String summaryFile) {
         writeSummary(dataFile, summaryFile, incidentList, processOnly);
     }
 
+    /**
+     *
+     */
     public void startLearning() {
         learnFromGrams();
         learnFromPOS();
     }
 
+    /**
+     *
+     * @param modelFile
+     */
     public void loadModels(String modelFile) {
         
         neuralGramModel = IOUtils.readModelFromFile(modelFile);
@@ -106,10 +125,17 @@ public class Learner extends AbstractLearner {
         trainerModel = neuralGramModel.getTrainerModel();
     }
     
+    /**
+     *
+     * @return
+     */
     public NeuralGramModel getModel(){
         return neuralGramModel;
     }
 
+    /**
+     *
+     */
     public void printLearnStats() {
         printGramStats(unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
     }
@@ -204,6 +230,11 @@ public class Learner extends AbstractLearner {
 
     }
 
+    /**
+     *
+     * @param overwrite
+     * @param outFile
+     */
     @Override
     public void updateModel(boolean overwrite, String outFile) {
 
@@ -220,6 +251,9 @@ public class Learner extends AbstractLearner {
 
     }
 
+    /**
+     *
+     */
     public void printAllGrams() {
 
         System.out.println("Unigram Map\r\n" + unigramMap.toString() + "\r\n");

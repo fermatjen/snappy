@@ -58,6 +58,9 @@ public class Snappy {
 
     private static final int threshold = 40;
 
+    /**
+     *
+     */
     public static void doTraining() {
         //TRAINING
 
@@ -83,6 +86,9 @@ public class Snappy {
         }
     }
 
+    /**
+     *
+     */
     public static void doTesting() {
         //TESTING
         //Start testing
@@ -110,6 +116,10 @@ public class Snappy {
 
     }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
         PrintStream err = System.err;

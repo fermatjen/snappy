@@ -37,6 +37,17 @@ import snappy.pos.POSScrapper;
  */
 public class Scorer {
 
+    /**
+     *
+     * @param incidentList
+     * @param unigramMap
+     * @param bigramMap
+     * @param trigramMap
+     * @param quadgramMap
+     * @param verbMap
+     * @param processLemma
+     * @return
+     */
     public static ArrayList scoreAllGrams(ArrayList incidentList, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap, boolean processLemma) {
 
         //Second pass
@@ -61,6 +72,17 @@ public class Scorer {
 
     }
 
+    /**
+     *
+     * @param oline
+     * @param unigramMap
+     * @param bigramMap
+     * @param trigramMap
+     * @param quadgramMap
+     * @param verbMap
+     * @param processLemma
+     * @return
+     */
     public static double getGramScore(String oline, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap, boolean processLemma) {
         double score = 0;
         String line = "";

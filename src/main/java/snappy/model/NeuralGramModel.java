@@ -34,50 +34,98 @@ public class NeuralGramModel implements Serializable{
     
     private TrainerModel trainerModel = null;
 
+    /**
+     *
+     * @return
+     */
     public HashMap getUnigramMap() {
         return unigramMap;
     }
 
+    /**
+     *
+     * @param unigramMap
+     */
     public void setUnigramMap(HashMap unigramMap) {
         this.unigramMap = unigramMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap getBigramMap() {
         return bigramMap;
     }
 
+    /**
+     *
+     * @param bigramMap
+     */
     public void setBigramMap(HashMap bigramMap) {
         this.bigramMap = bigramMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap getTrigramMap() {
         return trigramMap;
     }
 
+    /**
+     *
+     * @param trigramMap
+     */
     public void setTrigramMap(HashMap trigramMap) {
         this.trigramMap = trigramMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap getQuadgramMap() {
         return quadgramMap;
     }
 
+    /**
+     *
+     * @param quadgramMap
+     */
     public void setQuadgramMap(HashMap quadgramMap) {
         this.quadgramMap = quadgramMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public HashMap getVerbMap() {
         return verbMap;
     }
 
+    /**
+     *
+     * @param verbMap
+     */
     public void setVerbMap(HashMap verbMap) {
         this.verbMap = verbMap;
     }
 
+    /**
+     *
+     * @return
+     */
     public TrainerModel getTrainerModel() {
         return trainerModel;
     }
 
+    /**
+     *
+     * @param trainerModel
+     */
     public void setTrainerModel(TrainerModel trainerModel) {
         this.trainerModel = trainerModel;
     }

@@ -32,11 +32,21 @@ public class Populater {
     private GramModel gramModel = null;
     private ArrayList filterModelList = null;
 
+    /**
+     *
+     * @param gramModel
+     * @param filterModelList
+     */
     public Populater(GramModel gramModel, ArrayList filterModelList) {
         this.gramModel = gramModel;
         this.filterModelList = filterModelList;
     }
 
+    /**
+     *
+     * @param line
+     * @param n
+     */
     public void populateNgrams(String line, int n) {
 
         //Unpack gram model

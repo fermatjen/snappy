@@ -19,12 +19,21 @@ package snappy.ngrams.iterator;
 
 import java.util.Iterator;
 
+/**
+ *
+ * @author fjenning
+ */
 public class NGramIterator implements Iterator<String> {
 
         String[] words;
         int pos = 0, n;
 
-        public NGramIterator(int n, String str) {
+    /**
+     *
+     * @param n
+     * @param str
+     */
+    public NGramIterator(int n, String str) {
             this.n = n;
             words = str.split(" ");
             //words = str.split("[[ ]*|[,]*|[;]*|[:]*|[']*|[’]*|[\\\\.]*|[:]*|[/]*|[!]*|[?]*|[+]*]‌​+");

@@ -29,6 +29,12 @@ import snappy.model.TrainerModel;
  */
 public class GramUtils {
     
+    /**
+     *
+     * @param filterList
+     * @param gram
+     * @return
+     */
     public static boolean isFilteredGram(ArrayList filterList, String gram) {
 
         for (int i = 0; i < filterList.size(); i++) {
@@ -41,6 +47,13 @@ public class GramUtils {
         return false;
     }
     
+    /**
+     *
+     * @param dataFile
+     * @param trainerModel
+     * @param processOnly
+     * @return
+     */
     public static ArrayList loadGramsFromDataFile(String dataFile, TrainerModel trainerModel, int processOnly) {
         ArrayList incidentList = new ArrayList();
         ArrayList clusters = trainerModel.getClusters();

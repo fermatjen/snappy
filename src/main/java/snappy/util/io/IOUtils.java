@@ -41,6 +41,11 @@ import static snappy.util.text.StringUtils.replace;
  */
 public class IOUtils {
 
+    /**
+     *
+     * @param modelFile Reads a NeuralGramModel from a serialized model file.
+     * @return a NeuralGramModel object that will contain the NGrams and POS Map
+     */
     public static NeuralGramModel readModelFromFile(String modelFile) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(modelFile));
@@ -55,6 +60,13 @@ public class IOUtils {
         return null;
     }
 
+    /**
+     *
+     * @param configFile Loads the Snappy configuration file containing configurable
+     * elements of Snappy. Also, certain performance tuning options are available.
+     * @return A ConfigModel object containing the configuration values read from the 
+     * configFile properties file.
+     */
     public static ConfigModel loadConfigFile(File configFile) {
         ConfigModel configModel = new ConfigModel();
 
@@ -124,6 +136,13 @@ public class IOUtils {
         return configModel;
     }
 
+    /**
+     *
+     * @param trainingFile A training file contains the training label denoting 
+     * a group of words or phrases. A training file must have the label and the 
+     * associated phrases in the label (phrase1, phrase2, phrase3) format.
+     * @return An ArrayList containing the TrainerModel objects.
+     */
     public static ArrayList loadTrainingFile(String trainingFile) {
 
         ArrayList trainerModelList = new ArrayList();
@@ -173,6 +192,11 @@ public class IOUtils {
         return trainerModelList;
     }
 
+    /**
+     *
+     * @param modelFile
+     * @param neuralGramModel
+     */
     public static void writeModelToFile(String modelFile, NeuralGramModel neuralGramModel) {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFile));
@@ -184,6 +208,13 @@ public class IOUtils {
         }
     }
 
+    /**
+     *
+     * @param dataFile
+     * @param processOnly
+     * @param canAlterInstance
+     * @return
+     */
     public static ArrayList getAllLinesFromFile(String dataFile, int processOnly, boolean canAlterInstance) {
 
         ArrayList linesList = new ArrayList();
@@ -212,6 +243,13 @@ public class IOUtils {
 
     }
 
+    /**
+     *
+     * @param dataFile
+     * @param summaryFile
+     * @param incidentList
+     * @param processOnly
+     */
     public static void writeSummary(String dataFile, String summaryFile, ArrayList incidentList, int processOnly) {
 
         FileWriter writer = null;

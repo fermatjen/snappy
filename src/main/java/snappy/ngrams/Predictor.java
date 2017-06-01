@@ -40,6 +40,16 @@ import static snappy.util.text.StringUtils.replace;
  */
 public class Predictor {
 
+    /**
+     *
+     * @param dataFile
+     * @param neuralGramModelList
+     * @param outFile
+     * @param processOnly
+     * @param threshold
+     * @param singleLabel
+     * @param processLemma
+     */
     public static void writePredictions(String dataFile, ArrayList neuralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel, boolean processLemma) {
 
         FileWriter outFileWriter = null;

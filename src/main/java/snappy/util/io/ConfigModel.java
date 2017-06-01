@@ -35,74 +35,146 @@ public class ConfigModel {
     private boolean fastmode = false;
     private boolean singlelabel = true;
 
+    /**
+     *
+     * @return
+     */
     public boolean isSinglelabel() {
         return singlelabel;
     }
 
+    /**
+     *
+     * @param singlelabel
+     */
     public void setSinglelabel(boolean singlelabel) {
         this.singlelabel = singlelabel;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isFastmode() {
         return fastmode;
     }
 
+    /**
+     *
+     * @param fastmode
+     */
     public void setFastmode(boolean fastmode) {
         this.fastmode = fastmode;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getSilent() {
         return silent;
     }
 
+    /**
+     *
+     * @param silent
+     */
     public void setSilent(String silent) {
         this.silent = silent;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDataFile() {
         return dataFile;
     }
 
+    /**
+     *
+     * @param dataFile
+     */
     public void setDataFile(String dataFile) {
         this.dataFile = dataFile;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getSummaryFile() {
         return summaryFile;
     }
 
+    /**
+     *
+     * @param summaryFile
+     */
     public void setSummaryFile(String summaryFile) {
         this.summaryFile = summaryFile;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getModelFile() {
         return modelFile;
     }
 
+    /**
+     *
+     * @param modelFile
+     */
     public void setModelFile(String modelFile) {
         this.modelFile = modelFile;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getTrainingFile() {
         return trainingFile;
     }
 
+    /**
+     *
+     * @param trainingFile
+     */
     public void setTrainingFile(String trainingFile) {
         this.trainingFile = trainingFile;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getProcessOnly() {
         return processOnly;
     }
 
+    /**
+     *
+     * @param processOnly
+     */
     public void setProcessOnly(int processOnly) {
         this.processOnly = processOnly;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getMode() {
         return mode;
     }
 
+    /**
+     *
+     * @param mode
+     */
     public void setMode(String mode) {
         this.mode = mode;
     }

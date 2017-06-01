@@ -29,6 +29,12 @@ import java.util.Map;
  */
 public class Comparator {
 
+    /**
+     *
+     * @param unsortMap
+     * @param order
+     * @return
+     */
     public static Map<String, Integer> sortByComparator(Map<String, Integer> unsortMap, final boolean order) {
 
         List<Map.Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());

@@ -29,18 +29,34 @@ public class TrainerModel implements Serializable{
     private String label = null;
     private ArrayList clusters = null;
 
+    /**
+     *
+     * @return
+     */
     public String getLabel() {
         return label;
     }
 
+    /**
+     *
+     * @param label
+     */
     public void setLabel(String label) {
         this.label = label;
     }
 
+    /**
+     *
+     * @return
+     */
     public ArrayList getClusters() {
         return clusters;
     }
 
+    /**
+     *
+     * @param clusters
+     */
     public void setClusters(ArrayList clusters) {
         this.clusters = clusters;
     }

@@ -27,6 +27,9 @@ public class StopWords {
 
     private ArrayList swords = new ArrayList();
 
+    /**
+     *
+     */
     public StopWords() {
         swords.add("a");
         swords.add("able");
@@ -699,6 +702,11 @@ public class StopWords {
         
     }
     
+    /**
+     *
+     * @param word
+     * @return
+     */
     public boolean containsWord(String word){
         word = word.trim();
         return swords.contains(word);

@@ -24,6 +24,14 @@ package snappy.util.text;
  */
 public class StringUtils {
     
+    /**
+     *
+     * @param source
+     * @param pattern
+     * @param replace
+     * @param startAt
+     * @return
+     */
     public static String replace(String source, String pattern, String replace, int startAt) {
 
         if (source != null) {

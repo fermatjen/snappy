@@ -27,16 +27,25 @@ public class GramModel {
     
     private HashMap ngramMap = null;
 
+    /**
+     *
+     */
     public GramModel() {
         //An empty constructor looks intriguing
     }
     
-    
-
+    /**
+     *
+     * @return
+     */
     public HashMap getNgramMap() {
         return ngramMap;
     }
 
+    /**
+     *
+     * @param ngramMap
+     */
     public void setNgramMap(HashMap ngramMap) {
         this.ngramMap = ngramMap;
     }

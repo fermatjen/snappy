@@ -45,12 +45,21 @@ public class POSScrapper {
     private TreebankLanguagePack tlp = null;
     private StopWords swords = null;
 
+    /**
+     *
+     * @param nlpModel
+     */
     public POSScrapper(NLPModel nlpModel) {
         lp = nlpModel.getLp();
         tlp = nlpModel.getTlp();
         swords = new StopWords();
     }
 
+    /**
+     *
+     * @param text
+     * @return
+     */
     public String getPennString(String text) {
         //System.out.println("FOR:" + text);
 
@@ -79,6 +88,11 @@ public class POSScrapper {
         return cpennString;
     }
 
+    /**
+     *
+     * @param raw
+     * @return
+     */
     public ArrayList getNounTokens(String raw) {
 
         raw = getPennString(raw);
@@ -147,6 +161,11 @@ public class POSScrapper {
         return phrases;
     }
 
+    /**
+     *
+     * @param raw
+     * @return
+     */
     public ArrayList getVerbTokens(String raw) {
 
         raw = getPennString(raw);
@@ -325,6 +344,11 @@ public class POSScrapper {
         return phrases;
     }
 
+    /**
+     *
+     * @param text
+     * @return
+     */
     public String getPOSSignature(String text) {
         if (text == null) {
             return null;
