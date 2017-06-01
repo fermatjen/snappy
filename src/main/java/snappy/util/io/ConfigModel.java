@@ -17,8 +17,6 @@
 
 package snappy.util.io;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author fjenning

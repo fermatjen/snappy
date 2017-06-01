@@ -14,14 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package snappy.pos;
 
 import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.process.Tokenizer;
-import edu.stanford.nlp.trees.GrammaticalStructureFactory;
-import edu.stanford.nlp.trees.PennTreebankLanguagePack;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreebankLanguagePack;
 import java.io.StringReader;
@@ -98,7 +95,6 @@ public class POSScrapper {
         raw = getPennString(raw);
 
         //raw = raw.replaceAll("\\W", "");
-
         ArrayList phrases = new ArrayList();
 
         ArrayList idenList = new ArrayList();
@@ -169,9 +165,8 @@ public class POSScrapper {
     public ArrayList getVerbTokens(String raw) {
 
         raw = getPennString(raw);
-        
-        //raw = raw.replaceAll("\\W", "");
 
+        //raw = raw.replaceAll("\\W", "");
         ArrayList phrases = new ArrayList();
 
         ArrayList idenList = new ArrayList();
@@ -240,11 +235,7 @@ public class POSScrapper {
         //System.out.println(raw);
         boolean isNounExtraction = true;
 
-        if (phraseIdentifier.contains("NP")) {
-            isNounExtraction = true;
-        } else {
-            isNounExtraction = false;
-        }
+        isNounExtraction = phraseIdentifier.contains("NP");
         int pointer = 0;
         ArrayList phrases = new ArrayList();
         while (true) {

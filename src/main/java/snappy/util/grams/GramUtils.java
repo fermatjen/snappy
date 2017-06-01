@@ -82,8 +82,8 @@ public class GramUtils {
                     String[] sentences = line.split("(?<=[a-z])\\.\\s+");
 
                     //HashMap incidentMap = new HashMap();
-                    for (int i = 0; i < sentences.length; i++) {
-                        String sentence = sentences[i].trim();
+                    for (String sentence1 : sentences) {
+                        String sentence = sentence1.trim();
                         if (isFilteredGram(clusters, sentence)) {
                             incidentList.add(sentence);
                         }

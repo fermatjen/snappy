@@ -35,7 +35,9 @@ public class StringUtils {
     public static String replace(String source, String pattern, String replace, int startAt) {
 
         if (source != null) {
-            final int len = pattern.length();
+            final int len;
+            len = pattern.length();
+            
             StringBuilder sb = new StringBuilder();
             int found = -1;
             int start = startAt;

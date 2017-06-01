@@ -49,11 +49,11 @@ public class IOUtils {
     public static NeuralGramModel readModelFromFile(String modelFile) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(modelFile));
-            NeuralGramModel neuralGramModel = (NeuralGramModel) ois.readObject();
+            NeuralGramModel neuralGramModel;
+            neuralGramModel = (NeuralGramModel) ois.readObject();
+
             return neuralGramModel;
-        } catch (IOException ex) {
-            Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
+        } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -62,10 +62,11 @@ public class IOUtils {
 
     /**
      *
-     * @param configFile Loads the Snappy configuration file containing configurable
-     * elements of Snappy. Also, certain performance tuning options are available.
-     * @return A ConfigModel object containing the configuration values read from the 
-     * configFile properties file.
+     * @param configFile Loads the Snappy configuration file containing
+     * configurable elements of Snappy. Also, certain performance tuning options
+     * are available.
+     * @return A ConfigModel object containing the configuration values read
+     * from the configFile properties file.
      */
     public static ConfigModel loadConfigFile(File configFile) {
         ConfigModel configModel = new ConfigModel();
@@ -73,61 +74,61 @@ public class IOUtils {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(configFile);
-            //Construct BufferedReader from InputStreamReader
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String line = null;
+            try (
+                    //Construct BufferedReader from InputStreamReader
+                    BufferedReader br = new BufferedReader(new InputStreamReader(fis))) {
+                String line = null;
 
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.startsWith("#")) {
-                    continue;
-                }
-                if (line.indexOf("=") != -1) {
-                    StringTokenizer stok = new StringTokenizer(line, "=");
-                    while (stok.hasMoreTokens()) {
-                        String configKey = stok.nextToken().trim();
-                        String configValue = stok.nextToken().trim();
+                while ((line = br.readLine()) != null) {
+                    line = line.trim();
+                    if (line.startsWith("#")) {
+                        continue;
+                    }
+                    if (line.contains("=")) {
+                        StringTokenizer stok = new StringTokenizer(line, "=");
+                        while (stok.hasMoreTokens()) {
+                            String configKey = stok.nextToken().trim();
+                            String configValue = stok.nextToken().trim();
 
-                        if (configKey.equals("dataFile")) {
-                            configModel.setDataFile(configValue);
-                        }
-                        if (configKey.equals("trainingFile")) {
-                            configModel.setTrainingFile(configValue);
-                        }
-                        if (configKey.equals("summaryFile")) {
-                            configModel.setSummaryFile(configValue);
-                        }
-                        if (configKey.equals("modelFile")) {
-                            configModel.setModelFile(configValue);
-                        }
-                        if (configKey.equals("processOnly")) {
-                            configModel.setProcessOnly(Integer.parseInt(configValue));
-                        }
-                        if (configKey.equals("mode")) {
-                            configModel.setMode(configValue);
-                        }
-                        if (configKey.equals("silent")) {
-                            configModel.setSilent(configValue);
-                        }
-                        if (configKey.equals("fastmode")) {
-                            if (configValue.toLowerCase().trim().equals("yes")) {
-                                configModel.setFastmode(true);
-                            } else if (configValue.toLowerCase().trim().equals("no")) {
-                                configModel.setFastmode(false);
+                            if (configKey.equals("dataFile")) {
+                                configModel.setDataFile(configValue);
                             }
-                        }
-                        if (configKey.equals("singlelabel")) {
-                            if (configValue.toLowerCase().trim().equals("yes")) {
-                                configModel.setSinglelabel(true);
-                            } else if (configValue.toLowerCase().trim().equals("no")) {
-                                configModel.setSinglelabel(false);
+                            if (configKey.equals("trainingFile")) {
+                                configModel.setTrainingFile(configValue);
+                            }
+                            if (configKey.equals("summaryFile")) {
+                                configModel.setSummaryFile(configValue);
+                            }
+                            if (configKey.equals("modelFile")) {
+                                configModel.setModelFile(configValue);
+                            }
+                            if (configKey.equals("processOnly")) {
+                                configModel.setProcessOnly(Integer.parseInt(configValue));
+                            }
+                            if (configKey.equals("mode")) {
+                                configModel.setMode(configValue);
+                            }
+                            if (configKey.equals("silent")) {
+                                configModel.setSilent(configValue);
+                            }
+                            if (configKey.equals("fastmode")) {
+                                if (configValue.toLowerCase().trim().equals("yes")) {
+                                    configModel.setFastmode(true);
+                                } else if (configValue.toLowerCase().trim().equals("no")) {
+                                    configModel.setFastmode(false);
+                                }
+                            }
+                            if (configKey.equals("singlelabel")) {
+                                if (configValue.toLowerCase().trim().equals("yes")) {
+                                    configModel.setSinglelabel(true);
+                                } else if (configValue.toLowerCase().trim().equals("no")) {
+                                    configModel.setSinglelabel(false);
+                                }
                             }
                         }
                     }
                 }
             }
-
-            br.close();
         } catch (IOException | NumberFormatException ex) {
             System.out.println("FATAL - Snappy configuration file error: " + ex.getMessage());
             System.exit(0);
@@ -138,8 +139,8 @@ public class IOUtils {
 
     /**
      *
-     * @param trainingFile A training file contains the training label denoting 
-     * a group of words or phrases. A training file must have the label and the 
+     * @param trainingFile A training file contains the training label denoting
+     * a group of words or phrases. A training file must have the label and the
      * associated phrases in the label (phrase1, phrase2, phrase3) format.
      * @return An ArrayList containing the TrainerModel objects.
      */
@@ -198,11 +199,9 @@ public class IOUtils {
      * @param neuralGramModel
      */
     public static void writeModelToFile(String modelFile, NeuralGramModel neuralGramModel) {
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFile));
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(modelFile))) {
             oos.writeObject(neuralGramModel);
             oos.flush();
-            oos.close();
         } catch (IOException ex) {
             Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -282,8 +281,8 @@ public class IOUtils {
                     String[] sentences = line.split("(?<=[a-z])\\.\\s+");
 
                     //HashMap incidentMap = new HashMap();
-                    for (int i = 0; i < sentences.length; i++) {
-                        String osentence = sentences[i].trim();
+                    for (String sentence1 : sentences) {
+                        String osentence = sentence1.trim();
                         String sentence = osentence.toLowerCase();
                         if (incidentList.contains(sentence)) {
                             if (sentence.length() < 5) {
@@ -318,7 +317,6 @@ public class IOUtils {
                 ex.printStackTrace();
             }
 
-            writer.close();
         } catch (IOException ex) {
             Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

@@ -16,7 +16,6 @@
  */
 package snappy.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import snappy.ngrams.Populater;
@@ -25,7 +24,6 @@ import snappy.pos.POSScrapper;
 import static snappy.util.grams.GramStats.printGramStats;
 import static snappy.util.grams.GramUtils.loadGramsFromDataFile;
 import snappy.util.io.IOUtils;
-import static snappy.util.io.IOUtils.getAllLinesFromFile;
 import static snappy.util.io.IOUtils.writeSummary;
 
 /**

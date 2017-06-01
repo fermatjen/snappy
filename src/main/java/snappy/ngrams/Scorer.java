@@ -18,7 +18,6 @@ package snappy.ngrams;
 
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -27,9 +26,7 @@ import edu.stanford.nlp.util.CoreMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Properties;
 import snappy.model.NLPModel;
-import snappy.pos.POSScrapper;
 
 /**
  *

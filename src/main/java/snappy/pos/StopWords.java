@@ -25,7 +25,7 @@ import java.util.ArrayList;
  */
 public class StopWords {
 
-    private ArrayList swords = new ArrayList();
+    private final ArrayList swords = new ArrayList();
 
     /**
      *

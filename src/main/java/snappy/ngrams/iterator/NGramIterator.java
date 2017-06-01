@@ -39,19 +39,22 @@ public class NGramIterator implements Iterator<String> {
             //words = str.split("[[ ]*|[,]*|[;]*|[:]*|[']*|[’]*|[\\\\.]*|[:]*|[/]*|[!]*|[?]*|[+]*]‌​+");
         }
 
+        @Override
         public boolean hasNext() {
             return pos < words.length - n + 1;
         }
 
+        @Override
         public String next() {
             StringBuilder sb = new StringBuilder();
             for (int i = pos; i < pos + n; i++) {
-                sb.append((i > pos ? " " : "") + words[i]);
+                sb.append(i > pos ? " " : "").append(words[i]);
             }
             pos++;
             return sb.toString();
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
