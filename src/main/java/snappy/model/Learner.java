@@ -18,6 +18,8 @@ package snappy.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import snappy.ngrams.Populater;
 import static snappy.ngrams.Scorer.scoreAllGrams;
 import snappy.pos.POSScrapper;
@@ -31,6 +33,7 @@ import static snappy.util.io.IOUtils.writeSummary;
  * @author fjenning
  */
 public class Learner extends AbstractLearner {
+    private static final Logger LOG = Logger.getLogger(Learner.class.getName());
 
     private HashMap unigramMap = new HashMap();
     private HashMap bigramMap = new HashMap();
@@ -164,7 +167,7 @@ public class Learner extends AbstractLearner {
                     String verb = (String) verbList.get(j);
                     if (verbMap.containsKey(verb)) {
                         int count = (int) verbMap.get(verb);
-                        count = count + 1;
+                        count += 1;
                         verbMap.remove(verb);
                         verbMap.put(verb, count);
                     } else {
@@ -253,12 +256,9 @@ public class Learner extends AbstractLearner {
      *
      */
     public void printAllGrams() {
-
-        System.out.println("Unigram Map\r\n" + unigramMap.toString() + "\r\n");
-        System.out.println("Bigram Map\r\n" + bigramMap.toString() + "\r\n");
-        System.out.println("Trigram Map\r\n" + trigramMap.toString() + "\r\n");
-        System.out.println("Quadgram Map\r\n" + quadgramMap.toString() + "\r\n");
-        System.out.println("POS Map\r\n" + verbMap.toString() + "\r\n");
+        LOG.log(Level.INFO, "Unigram Map\r\n{0}\r\n", unigramMap.toString());
+        LOG.log(Level.INFO, "Unigram Map\r\n{0}\r\n", unigramMap.toString());
+        LOG.log(Level.INFO, "Bigram Map\r\n{0}\r\n", bigramMap.toString());
     }
 
 }

@@ -19,6 +19,7 @@ package snappy.util.io;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,6 +28,7 @@ import java.util.List;
 public class CSVUtils {
 
     private static final char DEFAULT_SEPARATOR = ',';
+    private static final Logger LOG = Logger.getLogger(CSVUtils.class.getName());
 
     /**
      *

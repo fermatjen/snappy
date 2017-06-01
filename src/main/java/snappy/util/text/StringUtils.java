@@ -18,12 +18,15 @@
 
 package snappy.util.text;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author fjenning
  */
 public class StringUtils {
     
+    private static final Logger LOG = Logger.getLogger(StringUtils.class.getName());
     /**
      *
      * @param source

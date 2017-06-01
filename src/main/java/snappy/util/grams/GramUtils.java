@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import snappy.model.TrainerModel;
 
 /**
@@ -28,6 +29,7 @@ import snappy.model.TrainerModel;
  * @author fjenning
  */
 public class GramUtils {
+    private static final Logger LOG = Logger.getLogger(GramUtils.class.getName());
     
     /**
      *
@@ -94,7 +96,6 @@ public class GramUtils {
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
         
         return incidentList;

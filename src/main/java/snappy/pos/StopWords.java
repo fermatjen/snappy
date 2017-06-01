@@ -18,12 +18,14 @@
 package snappy.pos;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  *
  * @author fjenning
  */
 public class StopWords {
+    private static final Logger LOG = Logger.getLogger(StopWords.class.getName());
 
     private final ArrayList swords = new ArrayList();
 

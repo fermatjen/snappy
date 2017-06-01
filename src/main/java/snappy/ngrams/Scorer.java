@@ -26,6 +26,7 @@ import edu.stanford.nlp.util.CoreMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Logger;
 import snappy.model.NLPModel;
 
 /**
@@ -33,6 +34,7 @@ import snappy.model.NLPModel;
  * @author fjenning
  */
 public class Scorer {
+    private static final Logger LOG = Logger.getLogger(Scorer.class.getName());
 
     /**
      *
@@ -131,8 +133,7 @@ public class Scorer {
 
                 int c1 = (int) unigramMap.get(gram);
                 double s = (c1 * 1) + (gram.length() * 0.05);
-                score = score + s;
-                System.out.println("         Match (1): " + gram + " (score: +" + (s)+")");
+                score += s;
             }
         }
 
@@ -165,8 +166,7 @@ public class Scorer {
 
                 int c1 = (int) verbMap.get(gram);
                 double s = (c1 * 1) + (gram.length() * 0.05);
-                score = score + s;
-                System.out.println("         Match (V): " + gram + " (score: +" + (s)+")");
+                score += s;
             }
         }
 
@@ -195,8 +195,7 @@ public class Scorer {
                 int c1 = (int) bigramMap.get(gram);
 
                 double s = (c1 * 2) + (gram.length() * 0.15);
-                score = score + s;
-                System.out.println("         Match (2): " + gram + " (score: +" + (s)+")");
+                score += s;
             }
         }
         Iterator i3 = trigramMap.keySet().iterator();
@@ -224,8 +223,7 @@ public class Scorer {
                 int c1 = (int) trigramMap.get(gram);
 
                 double s = (c1 * 3) + (gram.length() * 0.2);
-                score = score + s;
-                System.out.println("         Match (3): " + gram + " (score: +" + (s)+")");
+                score += s;
             }
         }
         Iterator i4 = quadgramMap.keySet().iterator();
@@ -253,8 +251,7 @@ public class Scorer {
                 int c1 = (int) quadgramMap.get(gram);
 
                 double s = (c1 * 4) + (gram.length() * 0.6);
-                score = score + s;
-                System.out.println("         Match (4): " + gram + " (score: +" + (s)+")");
+                score += s;
             }
         }
 

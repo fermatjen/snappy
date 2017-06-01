@@ -19,6 +19,7 @@ package snappy.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,6 +28,7 @@ import java.util.HashMap;
 public class NeuralGramModel implements Serializable{
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOG = Logger.getLogger(NeuralGramModel.class.getName());
     
     private HashMap unigramMap = null;
     private HashMap bigramMap = null;

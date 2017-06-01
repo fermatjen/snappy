@@ -52,15 +52,12 @@ public class Snappy {
     private static boolean singlelabel = true;
 
     private static final int threshold = 40;
+    private static final Logger LOG = Logger.getLogger(Snappy.class.getName());
 
     /**
      *
      */
     public static void doTraining() {
-        //TRAINING
-
-        //Load the training set
-        System.out.println("[Snappy] Loading the training set...");
 
         //Get all trainer models
         ArrayList trainerModelList = loadTrainingFile(trainingFile);
@@ -116,8 +113,6 @@ public class Snappy {
      */
     public static void main(String[] args) {
 
-        PrintStream err = System.err;
-        PrintStream out = System.out;
         
         try {
             //Load configuration file
@@ -126,7 +121,6 @@ public class Snappy {
             File configFile = new File(base, "snappy.properties");
             //System.out.println("[Snappy] Loading from " + configFile.getAbsolutePath());
             if (!configFile.exists()) {
-                System.out.println("[Snappy] FATAL: Configuration file not found at "+configFile.getAbsolutePath());
                 System.exit(0);
             } else {
                 //Load the configuration file
@@ -157,7 +151,6 @@ public class Snappy {
                 }));
             }
             
-            System.out.println("[Snappy] Loading from " + configFile.getAbsolutePath());
 
             if (mode.equals("testing")) {
                 doTesting();
@@ -168,11 +161,6 @@ public class Snappy {
         } catch (URISyntaxException ex) {
             Logger.getLogger(Snappy.class
                     .getName()).log(Level.SEVERE, null, ex);
-        }
-
-        if (silent.equals("yes")) {
-            System.setErr(err);
-            System.setOut(out);
         }
 
     }

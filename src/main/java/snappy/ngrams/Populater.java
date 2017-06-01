@@ -19,6 +19,7 @@ package snappy.ngrams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 import snappy.model.GramModel;
 import snappy.ngrams.iterator.NGramIterator;
 import snappy.util.grams.GramUtils;
@@ -28,6 +29,7 @@ import snappy.util.grams.GramUtils;
  * @author fjenning
  */
 public class Populater {
+    private static final Logger LOG = Logger.getLogger(Populater.class.getName());
 
     private GramModel gramModel = null;
     private ArrayList filterModelList = null;
@@ -55,7 +57,7 @@ public class Populater {
         //Building unigram map
         NGramIterator iter = new NGramIterator(n, line);
         while (iter.hasNext()) {
-            String ngram = ((String) iter.next()).trim();
+            String ngram = iter.next().trim();
             if (ngram.length() < 3) {
                 continue;
             }
@@ -64,7 +66,7 @@ public class Populater {
 
                 if (ngramMap.containsKey(ngram)) {
                     int count = (int) ngramMap.get(ngram);
-                    count = count + 1;
+                    count += 1;
                     ngramMap.remove(ngram);
                     ngramMap.put(ngram, count);
                 } else {

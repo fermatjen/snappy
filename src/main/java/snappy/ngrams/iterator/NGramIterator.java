@@ -18,12 +18,14 @@
 package snappy.ngrams.iterator;
 
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 /**
  *
  * @author fjenning
  */
 public class NGramIterator implements Iterator<String> {
+    private static final Logger LOG = Logger.getLogger(NGramIterator.class.getName());
 
         String[] words;
         int pos = 0, n;

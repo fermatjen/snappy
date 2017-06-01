@@ -23,12 +23,14 @@ import edu.stanford.nlp.trees.GrammaticalStructureFactory;
 import edu.stanford.nlp.trees.PennTreebankLanguagePack;
 import edu.stanford.nlp.trees.TreebankLanguagePack;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  *
  * @author fjenning
  */
 public class NLPModel {
+    private static final Logger LOG = Logger.getLogger(NLPModel.class.getName());
 
     private LexicalizedParser lp = null;
     private TreebankLanguagePack tlp = null;

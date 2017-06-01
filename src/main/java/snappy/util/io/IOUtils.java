@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import snappy.Snappy;
 import snappy.model.NeuralGramModel;
 import snappy.model.TrainerModel;
 import static snappy.util.text.StringUtils.replace;
@@ -40,6 +39,7 @@ import static snappy.util.text.StringUtils.replace;
  * @author fjenning
  */
 public class IOUtils {
+    private static final Logger LOG = Logger.getLogger(IOUtils.class.getName());
 
     /**
      *
@@ -130,7 +130,6 @@ public class IOUtils {
                 }
             }
         } catch (IOException | NumberFormatException ex) {
-            System.out.println("FATAL - Snappy configuration file error: " + ex.getMessage());
             System.exit(0);
         }
 
@@ -161,17 +160,17 @@ public class IOUtils {
                     continue;
                 }
 
-                int loc = line.indexOf("(");
+                int loc = line.indexOf('(');
                 if (loc != -1) {
                     //Load labels and patterns
                     TrainerModel trainerModel = new TrainerModel();
                     ArrayList filterList = new ArrayList();
                     String label = line.substring(0, loc).trim();
 
-                    int roc = line.indexOf(")", loc);
+                    int roc = line.indexOf(')', loc);
                     if (roc != -1) {
                         String patterns = line.substring(loc + 1, roc);
-                        if (patterns.indexOf(",") != -1) {
+                        if (patterns.indexOf(',') != -1) {
                             StringTokenizer stok = new StringTokenizer(patterns, ",");
                             while (stok.hasMoreTokens()) {
                                 String pattern = stok.nextToken().toLowerCase().trim();
@@ -187,7 +186,6 @@ public class IOUtils {
                 }
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
 
         return trainerModelList;
@@ -235,7 +233,6 @@ public class IOUtils {
                 count++;
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
         }
 
         return linesList;
@@ -314,7 +311,6 @@ public class IOUtils {
                 }
 
             } catch (Exception ex) {
-                ex.printStackTrace();
             }
 
         } catch (IOException ex) {

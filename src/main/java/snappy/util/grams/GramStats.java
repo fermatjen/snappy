@@ -19,6 +19,8 @@ package snappy.util.grams;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static snappy.util.collections.Comparator.sortByComparator;
 
 /**
@@ -26,6 +28,8 @@ import static snappy.util.collections.Comparator.sortByComparator;
  * @author fjenning
  */
 public class GramStats {
+
+    private static final Logger LOG = Logger.getLogger(GramStats.class.getName());
 
     /**
      *
@@ -36,19 +40,15 @@ public class GramStats {
      * @param verbMap
      */
     public static void printGramStats(HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap) {
-
         Map<String, Integer> sortedUnigramMap = sortByComparator(unigramMap, false);
         Map<String, Integer> sortedBigramMap = sortByComparator(bigramMap, false);
         Map<String, Integer> sortedTrigramMap = sortByComparator(trigramMap, false);
         Map<String, Integer> sortedQuadgramMap = sortByComparator(quadgramMap, false);
         Map<String, Integer> sortedVerbMap = sortByComparator(verbMap, false);
-
-        System.out.println("    Unigrams :" + sortedUnigramMap.size());
-        System.out.println("    Bigrams :" + sortedBigramMap.size());
-        System.out.println("    Trigrams :" + sortedTrigramMap.size());
-        System.out.println("    Quadgrams :" + sortedQuadgramMap.size());
-        System.out.println("    Verbs :" + sortedVerbMap.size());
-
+        LOG.log(Level.INFO, "    Unigrams :{0}", sortedUnigramMap.size());
+        LOG.log(Level.INFO, "    Bigrams :{0}", sortedBigramMap.size());
+        LOG.log(Level.INFO, "    Trigrams :{0}", sortedTrigramMap.size());
+        LOG.log(Level.INFO, "    Quadgrams :{0}", sortedQuadgramMap.size());
     }
 
 }

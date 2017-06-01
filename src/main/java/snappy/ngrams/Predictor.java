@@ -38,6 +38,7 @@ import static snappy.util.text.StringUtils.replace;
  */
 public class Predictor {
 
+    private static final Logger LOG = Logger.getLogger(Predictor.class.getName());
     /**
      *
      * @param dataFile
@@ -74,11 +75,11 @@ public class Predictor {
 
                     NeuralGramModel neuralGramModel = (NeuralGramModel) neuralGramModelList.get(j);
 
-                    HashMap unigramMap = (HashMap) neuralGramModel.getUnigramMap();
-                    HashMap bigramMap = (HashMap) neuralGramModel.getBigramMap();
-                    HashMap trigramMap = (HashMap) neuralGramModel.getTrigramMap();
-                    HashMap quadgramMap = (HashMap) neuralGramModel.getQuadgramMap();
-                    HashMap verbMap = (HashMap) neuralGramModel.getVerbMap();
+                    HashMap unigramMap = neuralGramModel.getUnigramMap();
+                    HashMap bigramMap = neuralGramModel.getBigramMap();
+                    HashMap trigramMap = neuralGramModel.getTrigramMap();
+                    HashMap quadgramMap = neuralGramModel.getQuadgramMap();
+                    HashMap verbMap = neuralGramModel.getVerbMap();
 
                     //Get class label
                     String label = neuralGramModel.getTrainerModel().getLabel();

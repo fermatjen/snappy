@@ -18,12 +18,14 @@
 package snappy.model;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 /**
  *
  * @author fjenning
  */
 public class GramModel {
+    private static final Logger LOG = Logger.getLogger(GramModel.class.getName());
     
     private HashMap ngramMap = null;
 

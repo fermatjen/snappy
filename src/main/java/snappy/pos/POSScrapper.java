@@ -28,15 +28,32 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import snappy.model.NLPModel;
 
-/**
- *
- * @author fjenning
- */
+
 public class POSScrapper {
+    private static final Logger LOG = Logger.getLogger(POSScrapper.class.getName());
+    private static String cleanStartingPeriod(String str) {
+        String clean = "";
+        
+        boolean charHit = false;
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (str.charAt(i) == '.') {
+                if (charHit) {
+                    clean += c;
+                }
+            } else {
+                clean += c;
+                charHit = true;
+            }
+        }
+        
+        return clean.trim();
+    }
 
     private LexicalizedParser lp = null;
     private TreebankLanguagePack tlp = null;
@@ -353,7 +370,7 @@ public class POSScrapper {
             String pattern = m.group(1);
             //System.out.println("PAT:" + pattern);
             if (pattern.contains("(")) {
-                int loc = pattern.lastIndexOf("(");
+                int loc = pattern.lastIndexOf('(');
                 String spattern = pattern.substring(loc + 1, pattern.length());
                 //System.out.println("SPAT:" + spattern);
                 StringTokenizer stok = new StringTokenizer(spattern, " ");
@@ -374,23 +391,5 @@ public class POSScrapper {
         return posSignature;
     }
 
-    private static String cleanStartingPeriod(String str) {
-        String clean = "";
-
-        boolean charHit = false;
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
-            if (str.charAt(i) == '.') {
-                if (charHit) {
-                    clean = clean + c;
-                }
-            } else {
-                clean = clean + c;
-                charHit = true;
-            }
-        }
-
-        return clean.trim();
-    }
 
 }
