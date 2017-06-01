@@ -16,16 +16,11 @@
  */
 package snappy;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.model.Learner;
@@ -96,8 +91,7 @@ public class Snappy {
         File children[] = modelFilePath.listFiles();
         ArrayList neuralGramModelList = new ArrayList();
 
-        for (int i = 0; i < children.length; i++) {
-            File mFile = children[i];
+        for (File mFile : children) {
             if (mFile.isFile()) {
                 String fpath = mFile.getAbsolutePath();
                 if (fpath.endsWith(".ser")) {
