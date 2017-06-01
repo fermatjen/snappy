@@ -25,6 +25,8 @@ import java.util.HashMap;
  * @author fjenning
  */
 public class NeuralGramModel implements Serializable{
+
+    private static final long serialVersionUID = 1L;
     
     private HashMap unigramMap = null;
     private HashMap bigramMap = null;
