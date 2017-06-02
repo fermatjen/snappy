@@ -30,7 +30,6 @@ import java.util.logging.Logger;
  * @author fjenning
  */
 public class NLPModel {
-    private static final Logger LOG = Logger.getLogger(NLPModel.class.getName());
 
     private LexicalizedParser lp = null;
     private TreebankLanguagePack tlp = null;

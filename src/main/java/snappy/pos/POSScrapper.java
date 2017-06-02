@@ -28,14 +28,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import snappy.model.NLPModel;
 
 
 public class POSScrapper {
-    private static final Logger LOG = Logger.getLogger(POSScrapper.class.getName());
+    
     private static String cleanStartingPeriod(String str) {
         String clean = "";
         

@@ -130,6 +130,7 @@ public class IOUtils {
                 }
             }
         } catch (IOException | NumberFormatException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
             System.exit(0);
         }
 

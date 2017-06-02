@@ -110,12 +110,12 @@ public class Predictor {
                 }
             }
         } catch (IOException ex) {
-            Logger.getLogger(Predictor.class.getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         } finally {
             try {
                 outFileWriter.close();
             } catch (IOException ex) {
-                Logger.getLogger(Predictor.class.getName()).log(Level.SEVERE, null, ex);
+                LOG.log(Level.SEVERE, null, ex);
             }
         }
     }

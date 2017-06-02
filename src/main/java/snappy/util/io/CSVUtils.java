@@ -19,6 +19,7 @@ package snappy.util.io;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -69,30 +70,34 @@ public class CSVUtils {
      * @param customQuote
      * @throws IOException
      */
-    public static void writeLine(Writer w, List<String> values, char separators, char customQuote) throws IOException {
+    public static void writeLine(Writer w, List<String> values, char separators, char customQuote) {
 
-        boolean first = true;
+        try {
+            boolean first = true;
 
-        //default customQuote is empty
-        if (separators == ' ') {
-            separators = DEFAULT_SEPARATOR;
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (String value : values) {
-            if (!first) {
-                sb.append(separators);
-            }
-            if (customQuote == ' ') {
-                sb.append(followCVSformat(value));
-            } else {
-                sb.append(customQuote).append(followCVSformat(value)).append(customQuote);
+            //default customQuote is empty
+            if (separators == ' ') {
+                separators = DEFAULT_SEPARATOR;
             }
 
-            first = false;
+            StringBuilder sb = new StringBuilder();
+            for (String value : values) {
+                if (!first) {
+                    sb.append(separators);
+                }
+                if (customQuote == ' ') {
+                    sb.append(followCVSformat(value));
+                } else {
+                    sb.append(customQuote).append(followCVSformat(value)).append(customQuote);
+                }
+
+                first = false;
+            }
+            sb.append("\n");
+            w.append(sb.toString());
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, null, ex);
         }
-        sb.append("\n");
-        w.append(sb.toString());
 
     }
 

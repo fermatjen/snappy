@@ -26,6 +26,7 @@ import edu.stanford.nlp.util.CoreMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.model.NLPModel;
 
@@ -34,6 +35,7 @@ import snappy.model.NLPModel;
  * @author fjenning
  */
 public class Scorer {
+
     private static final Logger LOG = Logger.getLogger(Scorer.class.getName());
 
     /**
@@ -88,171 +90,175 @@ public class Scorer {
         NLPModel nlpModel = null;
         StanfordCoreNLP pipeline = null;
 
-        if (processLemma) {
-            //Lemmatize sentence
-            nlpModel = new NLPModel();
-            pipeline = nlpModel.getPipeline();
-            Annotation document = pipeline.process(oline);
-
-            for (CoreMap sentence : document.get(SentencesAnnotation.class)) {
-                for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
-                    //String word = token.get(TextAnnotation.class);
-                    String lemma = token.get(LemmaAnnotation.class);
-                    //System.out.println("Word :" + word);
-                    //System.out.println("Lemma :" + lemma);
-                    line = line + " " + lemma;
-                }
-            }
-        } else {
-            line = oline;
-        }
-
-        //Strict match in unigram list
-        Iterator i1 = unigramMap.keySet().iterator();
-        while (i1.hasNext()) {
-            String gram = (String) i1.next();
-            String lgram = "";
-
+        try {
             if (processLemma) {
-                //Get lemma
-                Annotation document1 = pipeline.process(gram);
-                for (CoreMap sentence1 : document1.get(SentencesAnnotation.class)) {
-                    for (CoreLabel token1 : sentence1.get(TokensAnnotation.class)) {
-                        //String word = token.get(TextAnnotation.class);
-                        lgram = lgram +" "+token1.get(LemmaAnnotation.class);
-                        //System.out.println("Word :" + word);
-                        //System.out.println("Lemma :" + gram);
+                //Lemmatize sentence
+                nlpModel = new NLPModel();
+                pipeline = nlpModel.getPipeline();
+                Annotation document = pipeline.process(oline);
 
+                for (CoreMap sentence : document.get(SentencesAnnotation.class)) {
+                    for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
+                        //String word = token.get(TextAnnotation.class);
+                        String lemma = token.get(LemmaAnnotation.class);
+                        //System.out.println("Word :" + word);
+                        //System.out.println("Lemma :" + lemma);
+                        line = line + " " + lemma;
                     }
                 }
             } else {
-                lgram = gram;
+                line = oline;
             }
-            lgram = lgram.trim();
-            if (line.contains(lgram)) {
 
-                int c1 = (int) unigramMap.get(gram);
-                double s = (c1 * 1) + (gram.length() * 0.05);
-                score += s;
-            }
-        }
+            //Strict match in unigram list
+            Iterator i1 = unigramMap.keySet().iterator();
+            while (i1.hasNext()) {
+                String gram = (String) i1.next();
+                String lgram = "";
 
-        if (score <= 1) {
-            return 0;
-        }
+                if (processLemma) {
+                    //Get lemma
+                    Annotation document1 = pipeline.process(gram);
+                    for (CoreMap sentence1 : document1.get(SentencesAnnotation.class)) {
+                        for (CoreLabel token1 : sentence1.get(TokensAnnotation.class)) {
+                            //String word = token.get(TextAnnotation.class);
+                            lgram = lgram + " " + token1.get(LemmaAnnotation.class);
+                            //System.out.println("Word :" + word);
+                            //System.out.println("Lemma :" + gram);
 
-        Iterator i0 = verbMap.keySet().iterator();
-        while (i0.hasNext()) {
-            String gram = (String) i0.next();
-            String lgram = "";
-
-            if (processLemma) {
-                //Get lemma
-                Annotation documentv = pipeline.process(gram);
-                for (CoreMap sentencev : documentv.get(SentencesAnnotation.class)) {
-                    for (CoreLabel tokenv : sentencev.get(TokensAnnotation.class)) {
-                        //String word = token.get(TextAnnotation.class);
-                        lgram = lgram +" "+tokenv.get(LemmaAnnotation.class);
-                        //System.out.println("Word :" + word);
-                        //System.out.println("Lemma :" + gram);
-
+                        }
                     }
+                } else {
+                    lgram = gram;
                 }
-            } else {
-                lgram = gram;
+                lgram = lgram.trim();
+                if (line.contains(lgram)) {
+
+                    int c1 = (int) unigramMap.get(gram);
+                    double s = (c1 * 1) + (gram.length() * 0.05);
+                    score += s;
+                }
             }
-            lgram = lgram.trim();
-            if (line.contains(lgram)) {
 
-                int c1 = (int) verbMap.get(gram);
-                double s = (c1 * 1) + (gram.length() * 0.05);
-                score += s;
+            if (score <= 1) {
+                return 0;
             }
-        }
 
-        Iterator i2 = bigramMap.keySet().iterator();
-        while (i2.hasNext()) {
-            String gram = (String) i2.next();
-            String lgram = "";
+            Iterator i0 = verbMap.keySet().iterator();
+            while (i0.hasNext()) {
+                String gram = (String) i0.next();
+                String lgram = "";
 
-            if (processLemma) {
-                //Get lemma
-                Annotation document2 = pipeline.process(gram);
-                for (CoreMap sentence2 : document2.get(SentencesAnnotation.class)) {
-                    for (CoreLabel token2 : sentence2.get(TokensAnnotation.class)) {
-                        //String word = token.get(TextAnnotation.class);
-                        lgram = lgram +" "+token2.get(LemmaAnnotation.class);
-                        //System.out.println("Word :" + word);
-                        //System.out.println("Lemma :" + gram);
+                if (processLemma) {
+                    //Get lemma
+                    Annotation documentv = pipeline.process(gram);
+                    for (CoreMap sentencev : documentv.get(SentencesAnnotation.class)) {
+                        for (CoreLabel tokenv : sentencev.get(TokensAnnotation.class)) {
+                            //String word = token.get(TextAnnotation.class);
+                            lgram = lgram + " " + tokenv.get(LemmaAnnotation.class);
+                            //System.out.println("Word :" + word);
+                            //System.out.println("Lemma :" + gram);
 
+                        }
                     }
+                } else {
+                    lgram = gram;
                 }
-            } else {
-                lgram = gram;
+                lgram = lgram.trim();
+                if (line.contains(lgram)) {
+
+                    int c1 = (int) verbMap.get(gram);
+                    double s = (c1 * 1) + (gram.length() * 0.05);
+                    score += s;
+                }
             }
-            lgram = lgram.trim();
-            if (line.contains(lgram)) {
-                int c1 = (int) bigramMap.get(gram);
 
-                double s = (c1 * 2) + (gram.length() * 0.15);
-                score += s;
-            }
-        }
-        Iterator i3 = trigramMap.keySet().iterator();
-        while (i3.hasNext()) {
-            String gram = (String) i3.next();
-            String lgram = "";
+            Iterator i2 = bigramMap.keySet().iterator();
+            while (i2.hasNext()) {
+                String gram = (String) i2.next();
+                String lgram = "";
 
-            if (processLemma) {
-                //Get lemma
-                Annotation document3 = pipeline.process(gram);
-                for (CoreMap sentence3 : document3.get(SentencesAnnotation.class)) {
-                    for (CoreLabel token3 : sentence3.get(TokensAnnotation.class)) {
-                        //String word = token.get(TextAnnotation.class);
-                        lgram = lgram +" "+token3.get(LemmaAnnotation.class);
-                        //System.out.println("Word :" + word);
-                        //System.out.println("Lemma :" + gram);
+                if (processLemma) {
+                    //Get lemma
+                    Annotation document2 = pipeline.process(gram);
+                    for (CoreMap sentence2 : document2.get(SentencesAnnotation.class)) {
+                        for (CoreLabel token2 : sentence2.get(TokensAnnotation.class)) {
+                            //String word = token.get(TextAnnotation.class);
+                            lgram = lgram + " " + token2.get(LemmaAnnotation.class);
+                            //System.out.println("Word :" + word);
+                            //System.out.println("Lemma :" + gram);
 
+                        }
                     }
+                } else {
+                    lgram = gram;
                 }
-            } else {
-                lgram = gram;
+                lgram = lgram.trim();
+                if (line.contains(lgram)) {
+                    int c1 = (int) bigramMap.get(gram);
+
+                    double s = (c1 * 2) + (gram.length() * 0.15);
+                    score += s;
+                }
             }
-            lgram = lgram.trim();
-            if (line.contains(lgram)) {
-                int c1 = (int) trigramMap.get(gram);
+            Iterator i3 = trigramMap.keySet().iterator();
+            while (i3.hasNext()) {
+                String gram = (String) i3.next();
+                String lgram = "";
 
-                double s = (c1 * 3) + (gram.length() * 0.2);
-                score += s;
-            }
-        }
-        Iterator i4 = quadgramMap.keySet().iterator();
-        while (i4.hasNext()) {
-            String gram = (String) i4.next();
-            String lgram = "";
+                if (processLemma) {
+                    //Get lemma
+                    Annotation document3 = pipeline.process(gram);
+                    for (CoreMap sentence3 : document3.get(SentencesAnnotation.class)) {
+                        for (CoreLabel token3 : sentence3.get(TokensAnnotation.class)) {
+                            //String word = token.get(TextAnnotation.class);
+                            lgram = lgram + " " + token3.get(LemmaAnnotation.class);
+                            //System.out.println("Word :" + word);
+                            //System.out.println("Lemma :" + gram);
 
-            if (processLemma) {
-                //Get lemma
-                Annotation document4 = pipeline.process(gram);
-                for (CoreMap sentence4 : document4.get(SentencesAnnotation.class)) {
-                    for (CoreLabel token4 : sentence4.get(TokensAnnotation.class)) {
-                        //String word = token.get(TextAnnotation.class);
-                        lgram = lgram +" "+token4.get(LemmaAnnotation.class);
-                        //System.out.println("Word :" + word);
-                        //System.out.println("Lemma :" + gram);
-
+                        }
                     }
+                } else {
+                    lgram = gram;
                 }
-            } else {
-                lgram = gram;
-            }
-            lgram = lgram.trim();
-            if (line.contains(lgram)) {
-                int c1 = (int) quadgramMap.get(gram);
+                lgram = lgram.trim();
+                if (line.contains(lgram)) {
+                    int c1 = (int) trigramMap.get(gram);
 
-                double s = (c1 * 4) + (gram.length() * 0.6);
-                score += s;
+                    double s = (c1 * 3) + (gram.length() * 0.2);
+                    score += s;
+                }
             }
+            Iterator i4 = quadgramMap.keySet().iterator();
+            while (i4.hasNext()) {
+                String gram = (String) i4.next();
+                String lgram = "";
+
+                if (processLemma) {
+                    //Get lemma
+                    Annotation document4 = pipeline.process(gram);
+                    for (CoreMap sentence4 : document4.get(SentencesAnnotation.class)) {
+                        for (CoreLabel token4 : sentence4.get(TokensAnnotation.class)) {
+                            //String word = token.get(TextAnnotation.class);
+                            lgram = lgram + " " + token4.get(LemmaAnnotation.class);
+                            //System.out.println("Word :" + word);
+                            //System.out.println("Lemma :" + gram);
+
+                        }
+                    }
+                } else {
+                    lgram = gram;
+                }
+                lgram = lgram.trim();
+                if (line.contains(lgram)) {
+                    int c1 = (int) quadgramMap.get(gram);
+
+                    double s = (c1 * 4) + (gram.length() * 0.6);
+                    score += s;
+                }
+            }
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "[Snappy] Error while scoring ngrams");
         }
 
         return score;

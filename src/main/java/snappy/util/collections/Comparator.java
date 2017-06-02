@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  *
@@ -30,7 +29,6 @@ import java.util.logging.Logger;
  */
 public class Comparator {
 
-    private static final Logger LOG = Logger.getLogger(Comparator.class.getName());
     /**
      *
      * @param unsortMap

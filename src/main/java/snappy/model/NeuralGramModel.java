@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 public class NeuralGramModel implements Serializable{
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = Logger.getLogger(NeuralGramModel.class.getName());
     
     private HashMap unigramMap = null;
     private HashMap bigramMap = null;

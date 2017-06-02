@@ -159,8 +159,7 @@ public class Snappy {
             }
 
         } catch (URISyntaxException ex) {
-            Logger.getLogger(Snappy.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            LOG.log(Level.SEVERE, null, ex);
         }
 
     }

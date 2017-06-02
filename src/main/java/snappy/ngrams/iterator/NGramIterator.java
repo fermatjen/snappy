@@ -14,21 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package snappy.ngrams.iterator;
 
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 /**
  *
  * @author fjenning
  */
 public class NGramIterator implements Iterator<String> {
-    private static final Logger LOG = Logger.getLogger(NGramIterator.class.getName());
 
-        String[] words;
-        int pos = 0, n;
+    String[] words;
+    int pos = 0, n;
 
     /**
      *
@@ -36,28 +33,28 @@ public class NGramIterator implements Iterator<String> {
      * @param str
      */
     public NGramIterator(int n, String str) {
-            this.n = n;
-            words = str.split(" ");
-            //words = str.split("[[ ]*|[,]*|[;]*|[:]*|[']*|[’]*|[\\\\.]*|[:]*|[/]*|[!]*|[?]*|[+]*]‌​+");
-        }
-
-        @Override
-        public boolean hasNext() {
-            return pos < words.length - n + 1;
-        }
-
-        @Override
-        public String next() {
-            StringBuilder sb = new StringBuilder();
-            for (int i = pos; i < pos + n; i++) {
-                sb.append(i > pos ? " " : "").append(words[i]);
-            }
-            pos++;
-            return sb.toString();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
+        this.n = n;
+        words = str.split(" ");
+        //words = str.split("[[ ]*|[,]*|[;]*|[:]*|[']*|[’]*|[\\\\.]*|[:]*|[/]*|[!]*|[?]*|[+]*]‌​+");
     }
+
+    @Override
+    public boolean hasNext() {
+        return pos < words.length - n + 1;
+    }
+
+    @Override
+    public String next() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = pos; i < pos + n; i++) {
+            sb.append(i > pos ? " " : "").append(words[i]);
+        }
+        pos++;
+        return sb.toString();
+    }
+
+    @Override
+    public void remove() {
+        throw new UnsupportedOperationException();
+    }
+}

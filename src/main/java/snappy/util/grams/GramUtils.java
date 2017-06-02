@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.model.TrainerModel;
 
@@ -96,6 +97,7 @@ public class GramUtils {
             }
 
         } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "[Snappy] "+ex.getMessage());
         }
         
         return incidentList;

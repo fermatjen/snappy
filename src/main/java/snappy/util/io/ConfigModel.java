@@ -17,14 +17,11 @@
 
 package snappy.util.io;
 
-import java.util.logging.Logger;
-
 /**
  *
  * @author fjenning
  */
 public class ConfigModel {
-    private static final Logger LOG = Logger.getLogger(ConfigModel.class.getName());
     
     private String dataFile = null;
     private String summaryFile = null;

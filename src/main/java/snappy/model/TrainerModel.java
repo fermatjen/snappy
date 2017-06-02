@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 public class TrainerModel implements Serializable{
 
     private static final long serialVersionUID = 1L;
-    private static final Logger LOG = Logger.getLogger(TrainerModel.class.getName());
     
     private String label = null;
     private ArrayList clusters = null;

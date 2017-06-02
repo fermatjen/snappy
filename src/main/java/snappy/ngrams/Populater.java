@@ -19,7 +19,6 @@ package snappy.ngrams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Logger;
 import snappy.model.GramModel;
 import snappy.ngrams.iterator.NGramIterator;
 import snappy.util.grams.GramUtils;
@@ -29,8 +28,7 @@ import snappy.util.grams.GramUtils;
  * @author fjenning
  */
 public class Populater {
-    private static final Logger LOG = Logger.getLogger(Populater.class.getName());
-
+    
     private GramModel gramModel = null;
     private ArrayList filterModelList = null;
 
