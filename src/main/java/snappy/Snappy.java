@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.model.Learner;
@@ -28,6 +29,7 @@ import snappy.model.NeuralGramModel;
 import snappy.model.TrainerModel;
 import snappy.ngrams.Predictor;
 import snappy.util.io.ConfigModel;
+import static snappy.util.io.IOUtils.loadBiasMapFromFile;
 import static snappy.util.io.IOUtils.loadConfigFile;
 import static snappy.util.io.IOUtils.loadTrainingFile;
 import static snappy.util.text.StringUtils.replace;
@@ -44,6 +46,7 @@ public class Snappy {
     private static String dataFile = null;
     private static String summaryFile = null;
     private static String modelFile = null;
+    private static String biasFile = null;
     private static String trainingFile = null;
     private static int processOnly = 10;
     private static String mode = null;
@@ -84,6 +87,12 @@ public class Snappy {
     public static void doTesting() {
         //TESTING
         //Start testing
+        //Load learning bias vectors
+        HashMap biasMap = loadBiasMapFromFile(biasFile);
+        if (biasMap.size() > 0) {
+            LOG.log(Level.INFO, "Loading biases: {0}", biasMap.toString());
+        }
+
         File modelFilePath = new File(modelFile);
         File children[] = modelFilePath.listFiles();
         ArrayList neuralGramModelList = new ArrayList();
@@ -103,7 +112,7 @@ public class Snappy {
         }
 
         //Write prediction results
-        Predictor.writePredictions(dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singlelabel, processLemma);
+        Predictor.writePredictions(biasMap, dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singlelabel, processLemma);
 
     }
 
@@ -113,7 +122,6 @@ public class Snappy {
      */
     public static void main(String[] args) {
 
-        
         try {
             //Load configuration file
             File base = new File(Snappy.class
@@ -129,6 +137,7 @@ public class Snappy {
                 summaryFile = configModel.getSummaryFile();
                 modelFile = configModel.getModelFile();
                 trainingFile = configModel.getTrainingFile();
+                biasFile = configModel.getBiasFile();
                 processOnly = configModel.getProcessOnly();
                 mode = (configModel.getMode()).toLowerCase().trim();
                 silent = (configModel.getSilent()).toLowerCase().trim();
@@ -150,7 +159,6 @@ public class Snappy {
                     }
                 }));
             }
-            
 
             if (mode.equals("testing")) {
                 doTesting();

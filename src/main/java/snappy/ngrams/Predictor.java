@@ -31,6 +31,7 @@ import static snappy.util.collections.Comparator.sortByComparator;
 import snappy.util.io.CSVUtils;
 import static snappy.util.io.IOUtils.getAllLinesFromFile;
 import static snappy.util.text.StringUtils.replace;
+import static snappy.util.text.StringUtils.toTitleCase;
 
 /**
  *
@@ -39,6 +40,7 @@ import static snappy.util.text.StringUtils.replace;
 public class Predictor {
 
     private static final Logger LOG = Logger.getLogger(Predictor.class.getName());
+
     /**
      *
      * @param dataFile
@@ -49,7 +51,7 @@ public class Predictor {
      * @param singleLabel
      * @param processLemma
      */
-    public static void writePredictions(String dataFile, ArrayList neuralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel, boolean processLemma) {
+    public static void writePredictions(HashMap biasMap, String dataFile, ArrayList neuralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel, boolean processLemma) {
 
         FileWriter outFileWriter = null;
         //POSScrapper posScrapper = new POSScrapper(new NLPModel());
@@ -88,19 +90,43 @@ public class Predictor {
                     //Score for this neuralgram
                     //Eliminate weak biases
                     if (gramScore > 1) {
-                        neuralScoreMap.put(label, (int) gramScore);
+                        neuralScoreMap.put(label.toLowerCase(), (int) gramScore);
                     }
                 }
 
                 if (neuralScoreMap.size() > 0) {
                     Map<String, Integer> sortedNeuralScoreMap = sortByComparator(neuralScoreMap, false);
-                    Iterator i1 = sortedNeuralScoreMap.keySet().iterator();
-                    String predictedLabel = (String) i1.next();
 
+                    Iterator i1 = sortedNeuralScoreMap.keySet().iterator();
+                    String predictedLabel = ((String) i1.next()).trim();
+                    String lpredictedLabel = predictedLabel.toLowerCase();
                     //outFileWriter.write(predictedLabel+", \""+line+"\"\r\n");
                     if (singleLabel) {
+
+                        //Check prediction bias
+                        LOG.log(Level.INFO, "Predicted: "+predictedLabel);
+                        if (biasMap.containsKey(lpredictedLabel)) {
+                            LOG.log(Level.INFO, "Bias found for {0}", predictedLabel);
+
+                            //Find the weaker player/label
+                            ArrayList playerList = (ArrayList) biasMap.get(lpredictedLabel);
+                            
+                            for (int p = 0; p < playerList.size(); p++) {
+                                String player = (String) playerList.get(p);
+                                
+                                if(player.toLowerCase().equals(lpredictedLabel)){
+                                    continue;
+                                }
+                                if (neuralScoreMap.containsKey(player)) {
+                                    //Winning label
+                                    predictedLabel = player;
+                                    break;
+                                }
+                            }
+                        }
+
                         line = replace(line, ",", " ", 0);
-                        CSVUtils.writeLine(outFileWriter, Arrays.asList(predictedLabel, line));
+                        CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), line));
                     } else {
                         //Print all labels and their freqs
                         String neuralScores = sortedNeuralScoreMap.toString();

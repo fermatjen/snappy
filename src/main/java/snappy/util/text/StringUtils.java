@@ -14,8 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-
 package snappy.util.text;
 
 /**
@@ -23,7 +21,7 @@ package snappy.util.text;
  * @author fjenning
  */
 public class StringUtils {
-    
+
     /**
      *
      * @param source
@@ -37,7 +35,7 @@ public class StringUtils {
         if (source != null) {
             final int len;
             len = pattern.length();
-            
+
             StringBuilder sb = new StringBuilder();
             int found = -1;
             int start = startAt;
@@ -57,5 +55,23 @@ public class StringUtils {
             return "";
         }
     }
-    
+
+    public static String toTitleCase(String input) {
+        StringBuilder titleCase = new StringBuilder();
+        boolean nextTitleCase = true;
+
+        for (char c : input.toCharArray()) {
+            if (Character.isSpaceChar(c)) {
+                nextTitleCase = true;
+            } else if (nextTitleCase) {
+                c = Character.toTitleCase(c);
+                nextTitleCase = false;
+            }
+
+            titleCase.append(c);
+        }
+
+        return titleCase.toString();
+    }
+
 }

@@ -1,0 +1,6 @@
+# Learning bias vector
+# While prediction, early occuring weaker labels are inductively biased
+# over later occuring stronger labels
+
+# An example bias where Purchase label always wins over Billing label 
+Purchase bias (Purchase, Billing)

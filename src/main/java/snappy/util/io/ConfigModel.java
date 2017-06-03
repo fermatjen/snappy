@@ -27,6 +27,7 @@ public class ConfigModel {
     private String summaryFile = null;
     private String modelFile = null;
     private String trainingFile = null;
+    private String biasFile = null;
     private int processOnly = 50;
     private String mode = null;
     private String silent = null;
@@ -64,6 +65,16 @@ public class ConfigModel {
     public void setFastmode(boolean fastmode) {
         this.fastmode = fastmode;
     }
+
+    public String getBiasFile() {
+        return biasFile;
+    }
+
+    public void setBiasFile(String biasFile) {
+        this.biasFile = biasFile;
+    }
+    
+    
 
     /**
      *

@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,7 @@ import static snappy.util.text.StringUtils.replace;
  * @author fjenning
  */
 public class IOUtils {
+
     private static final Logger LOG = Logger.getLogger(IOUtils.class.getName());
 
     /**
@@ -102,6 +104,9 @@ public class IOUtils {
                             if (configKey.equals("modelFile")) {
                                 configModel.setModelFile(configValue);
                             }
+                            if (configKey.equals("biasFile")) {
+                                configModel.setBiasFile(configValue);
+                            }
                             if (configKey.equals("processOnly")) {
                                 configModel.setProcessOnly(Integer.parseInt(configValue));
                             }
@@ -135,6 +140,60 @@ public class IOUtils {
         }
 
         return configModel;
+    }
+
+    public static HashMap loadBiasMapFromFile(String biasFile) {
+
+        HashMap biasMap = new HashMap();
+
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(biasFile);
+            //Construct BufferedReader from InputStreamReader
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            String line = null;
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("#")) {
+                    continue;
+                }
+
+                int loc = line.indexOf('(');
+                if (loc != -1) {
+                    //Load labels and patterns
+
+                    //String biasLabel = line.substring(0, loc).trim();
+                    int roc = line.indexOf(')', loc);
+                    if (roc != -1) {
+
+                        //Pass 1
+                        String biasLabels = line.substring(loc + 1, roc);
+
+                        ArrayList biasList = new ArrayList();
+
+                        if (biasLabels.indexOf(',') != -1) {
+                            StringTokenizer stok = new StringTokenizer(biasLabels, ",");
+                            while (stok.hasMoreTokens()) {
+                                String biasLabel = stok.nextToken().toLowerCase().trim();
+                                biasList.add(biasLabel);
+                            }
+
+                            for (int j = 0; j < biasList.size(); j++) {
+                                String label = (String) biasList.get(j);
+                                biasMap.put(label, biasList);
+                            }
+
+                        }
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+        }
+
+        return biasMap;
+
     }
 
     /**
@@ -187,6 +246,7 @@ public class IOUtils {
                 }
             }
         } catch (IOException ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
         }
 
         return trainerModelList;
