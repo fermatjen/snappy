@@ -33,6 +33,17 @@ public class ConfigModel {
     private String silent = null;
     private boolean fastmode = false;
     private boolean singlelabel = true;
+    private boolean multivariate = false;
+
+    public boolean isMultivariate() {
+        return multivariate;
+    }
+
+    public void setMultivariate(boolean multivariate) {
+        this.multivariate = multivariate;
+    }
+    
+    
 
     /**
      *

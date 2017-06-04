@@ -53,6 +53,7 @@ public class Snappy {
     private static String silent = null;
     private static boolean processLemma = true;
     private static boolean singlelabel = true;
+    private static boolean isMultivariate = true;
 
     private static final int threshold = 40;
     private static final Logger LOG = Logger.getLogger(Snappy.class.getName());
@@ -112,7 +113,7 @@ public class Snappy {
         }
 
         //Write prediction results
-        Predictor.writePredictions(biasMap, dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singlelabel, processLemma);
+        Predictor.writePredictions(biasMap, dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singlelabel, isMultivariate, processLemma);
 
     }
 
@@ -144,6 +145,7 @@ public class Snappy {
                     mode = (configModel.getMode()).toLowerCase().trim();
                     processLemma = !configModel.isFastmode();
                     singlelabel = configModel.isSinglelabel();
+                    isMultivariate = configModel.isMultivariate();
                 } catch (Exception ex) {
                     LOG.log(Level.SEVERE, "A few config params are missing from the Snappy configuration file.");
                 }

@@ -25,8 +25,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import snappy.model.NLPModel;
 import snappy.model.serialized.NeuralGramModel;
 import static snappy.ngrams.Scorer.getGramScore;
+import snappy.pos.POSScrapper;
 import static snappy.util.collections.Comparator.sortByComparator;
 import snappy.util.io.CSVUtils;
 import static snappy.util.io.IOUtils.getAllLinesFromFile;
@@ -51,10 +53,10 @@ public class Predictor {
      * @param singleLabel
      * @param processLemma
      */
-    public static void writePredictions(HashMap biasMap, String dataFile, ArrayList neuralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel, boolean processLemma) {
+    public static void writePredictions(HashMap biasMap, String dataFile, ArrayList neuralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel, boolean isMultivariate, boolean processLemma) {
 
         FileWriter outFileWriter = null;
-        //POSScrapper posScrapper = new POSScrapper(new NLPModel());
+        POSScrapper posScrapper = new POSScrapper(new NLPModel());
 
         try {
             // Assuming that the gram and pos maps are filled, start
@@ -64,6 +66,7 @@ public class Predictor {
             for (int i = 0; i < linesList.size(); i++) {
 
                 String line = (String) linesList.get(i);
+                String oline = line;
 
                 if (line.length() < threshold) {
                     continue;
@@ -96,6 +99,9 @@ public class Predictor {
                 }
 
                 if (neuralScoreMap.size() > 0) {
+
+                    line = replace(line, ",", " ", 0);
+
                     Map<String, Integer> sortedNeuralScoreMap = sortByComparator(neuralScoreMap, false);
 
                     Iterator i1 = sortedNeuralScoreMap.keySet().iterator();
@@ -105,17 +111,17 @@ public class Predictor {
                     if (singleLabel) {
 
                         //Check prediction bias
-                        LOG.log(Level.INFO, "Predicted: "+predictedLabel);
+                        LOG.log(Level.INFO, "Predicted: " + predictedLabel);
                         if (biasMap.containsKey(lpredictedLabel)) {
                             LOG.log(Level.INFO, "Bias found for {0}", predictedLabel);
 
                             //Find the weaker player/label
                             ArrayList playerList = (ArrayList) biasMap.get(lpredictedLabel);
-                            
+
                             for (int p = 0; p < playerList.size(); p++) {
                                 String player = (String) playerList.get(p);
-                                
-                                if(player.toLowerCase().equals(lpredictedLabel)){
+
+                                if (player.toLowerCase().equals(lpredictedLabel)) {
                                     continue;
                                 }
                                 if (neuralScoreMap.containsKey(player)) {
@@ -125,15 +131,69 @@ public class Predictor {
                                 }
                             }
                         }
-
-                        line = replace(line, ",", " ", 0);
-                        CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), line));
-                    } else {
-                        //Print all labels and their freqs
-                        String neuralScores = sortedNeuralScoreMap.toString();
-                        neuralScores = replace(neuralScores, ",", " ", 0);
-                        CSVUtils.writeLine(outFileWriter, Arrays.asList(neuralScores, line));
                     }
+
+                    if (isMultivariate) {
+                        //Mult-variate prediction
+                        //Get noun and verb tokens
+                        ArrayList lineNounList = posScrapper.getNounTokens(oline, true);
+                        ArrayList lineVerbList = posScrapper.getVerbTokens(oline, true);
+
+                        for (int j = 0; j < neuralGramModelList.size(); j++) {
+
+                            NeuralGramModel neuralGramModel = (NeuralGramModel) neuralGramModelList.get(j);
+
+                            //Get class label
+                            String label = neuralGramModel.getTrainerModel().getLabel();
+
+                            if (label.toLowerCase().equals(predictedLabel)) {
+                                //Get best action and best object AS PER THE TRAINING not TESTING)
+                                HashMap verbMap = neuralGramModel.getVerbMap();
+                                HashMap nounMap = neuralGramModel.getNounMap();
+
+                                //Sort
+                                Map<String, Integer> sortedVerbMap = sortByComparator(verbMap, false);
+                                Map<String, Integer> sortedNounMap = sortByComparator(nounMap, false);
+
+                                String bestVerb = "NA";
+                                String bestNoun = "NA";
+
+                                if (verbMap.size() >= 1) {
+                                    for (String verb : sortedVerbMap.keySet()) {
+                                        if (lineVerbList.contains(verb)) {
+                                            //Best verb
+                                            bestVerb = verb;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (nounMap.size() >= 1) {
+                                    for (String noun : sortedNounMap.keySet()) {
+                                        if (lineNounList.contains(noun)) {
+                                            //Best noun
+                                            bestNoun = noun;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                //Get lemma of best noun and verb
+                                bestNoun = posScrapper.getLemma(bestNoun);
+                                bestVerb = posScrapper.getLemma(bestVerb);
+                                CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), line));
+
+                            }
+                        }
+
+                    } else //Not-multivariate
+                     if (singleLabel) {
+                            CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), line));
+                        } else {
+                            //Print all labels and their freqs
+                            String neuralScores = sortedNeuralScoreMap.toString();
+                            neuralScores = replace(neuralScores, ",", " ", 0);
+                            CSVUtils.writeLine(outFileWriter, Arrays.asList(neuralScores, line));
+                        }
                 }
             }
         } catch (IOException ex) {

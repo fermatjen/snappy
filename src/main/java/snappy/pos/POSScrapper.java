@@ -16,11 +16,16 @@
  */
 package snappy.pos;
 
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.process.Tokenizer;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreebankLanguagePack;
+import edu.stanford.nlp.util.CoreMap;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,12 +37,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import snappy.model.NLPModel;
 
-
 public class POSScrapper {
-    
+
     private static String cleanStartingPeriod(String str) {
         String clean = "";
-        
+
         boolean charHit = false;
         for (int i = 0; i < str.length(); i++) {
             char c = str.charAt(i);
@@ -50,13 +54,14 @@ public class POSScrapper {
                 charHit = true;
             }
         }
-        
+
         return clean.trim();
     }
 
     private LexicalizedParser lp = null;
     private TreebankLanguagePack tlp = null;
     private StopWords swords = null;
+    private StanfordCoreNLP pipeline = null;
 
     /**
      *
@@ -65,7 +70,24 @@ public class POSScrapper {
     public POSScrapper(NLPModel nlpModel) {
         lp = nlpModel.getLp();
         tlp = nlpModel.getTlp();
+        pipeline = nlpModel.getPipeline();
         swords = new StopWords();
+    }
+
+    public String getLemma(String text) {
+        //Get lemma
+        String ltext = "";
+        Annotation documentn = pipeline.process(text);
+        for (CoreMap sentencen : documentn.get(CoreAnnotations.SentencesAnnotation.class)) {
+            for (CoreLabel tokenn : sentencen.get(CoreAnnotations.TokensAnnotation.class)) {
+                //String word = token.get(TextAnnotation.class);
+                ltext = ltext + " " + tokenn.get(CoreAnnotations.LemmaAnnotation.class);
+                //System.out.println("Word :" + word);
+                //System.out.println("Lemma :" + gram);
+
+            }
+        }
+        return ltext.trim();
     }
 
     /**
@@ -106,7 +128,7 @@ public class POSScrapper {
      * @param raw
      * @return
      */
-    public ArrayList getNounTokens(String raw) {
+    public ArrayList getNounTokens(String raw, boolean flatten) {
 
         raw = getPennString(raw);
 
@@ -157,7 +179,11 @@ public class POSScrapper {
                 //check stop word
                 if (!swords.containsWord(phrase)) {
                     //clean starting numerics
-                    phrases.add(cleanStartingPeriod(phrase));
+                    if (flatten) {
+                        phrases.add(cleanStartingPeriod(phrase.toLowerCase()));
+                    } else {
+                        phrases.add(cleanStartingPeriod(phrase));
+                    }
                 }
 
                 loc = extractCharAt;
@@ -178,7 +204,7 @@ public class POSScrapper {
      * @param raw
      * @return
      */
-    public ArrayList getVerbTokens(String raw) {
+    public ArrayList getVerbTokens(String raw, boolean flatten) {
 
         raw = getPennString(raw);
 
@@ -231,7 +257,11 @@ public class POSScrapper {
                 //check stop word
                 if (!swords.containsWord(phrase)) {
                     //clean starting numerics
-                    phrases.add(cleanStartingPeriod(phrase));
+                    if (flatten) {
+                        phrases.add(cleanStartingPeriod(phrase.toLowerCase()));
+                    } else {
+                        phrases.add(cleanStartingPeriod(phrase));
+                    }
                 }
 
                 loc = extractCharAt;
@@ -389,6 +419,5 @@ public class POSScrapper {
         //System.out.println(posSignature);
         return posSignature;
     }
-
 
 }

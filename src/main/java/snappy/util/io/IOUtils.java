@@ -130,6 +130,13 @@ public class IOUtils {
                                     configModel.setSinglelabel(false);
                                 }
                             }
+                            if (configKey.equals("multivariate")) {
+                                if (configValue.toLowerCase().trim().equals("yes")) {
+                                    configModel.setMultivariate(true);
+                                } else if (configValue.toLowerCase().trim().equals("no")) {
+                                    configModel.setMultivariate(false);
+                                }
+                            }
                         }
                     }
                 }

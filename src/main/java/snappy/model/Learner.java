@@ -167,7 +167,7 @@ public class Learner extends AbstractLearner {
             if (canParse) {
                 //System.out.println(incident);
                 //Get verb tokens
-                ArrayList verbList = posScrapper.getVerbTokens(incident);
+                ArrayList verbList = posScrapper.getVerbTokens(incident, false);
                 for (int j = 0; j < verbList.size(); j++) {
                     String verb = (String) verbList.get(j);
                     if (verbMap.containsKey(verb)) {
@@ -206,7 +206,7 @@ public class Learner extends AbstractLearner {
             if (canParse) {
                 //System.out.println(incident);
                 //Get verb tokens
-                ArrayList nounList = posScrapper.getNounTokens(incident);
+                ArrayList nounList = posScrapper.getNounTokens(incident, false);
                 for (int j = 0; j < nounList.size(); j++) {
                     String noun = (String) nounList.get(j);
                     if (nounMap.containsKey(noun)) {
