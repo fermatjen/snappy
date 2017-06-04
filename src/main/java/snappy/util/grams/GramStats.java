@@ -39,16 +39,19 @@ public class GramStats {
      * @param quadgramMap
      * @param verbMap
      */
-    public static void printGramStats(HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap) {
+    public static void printGramStats(HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap, HashMap nounMap) {
         Map<String, Integer> sortedUnigramMap = sortByComparator(unigramMap, false);
         Map<String, Integer> sortedBigramMap = sortByComparator(bigramMap, false);
         Map<String, Integer> sortedTrigramMap = sortByComparator(trigramMap, false);
         Map<String, Integer> sortedQuadgramMap = sortByComparator(quadgramMap, false);
         Map<String, Integer> sortedVerbMap = sortByComparator(verbMap, false);
+        Map<String, Integer> sortedNounMap = sortByComparator(nounMap, false);
         LOG.log(Level.INFO, "    Unigrams :{0}", sortedUnigramMap.size());
         LOG.log(Level.INFO, "    Bigrams :{0}", sortedBigramMap.size());
         LOG.log(Level.INFO, "    Trigrams :{0}", sortedTrigramMap.size());
         LOG.log(Level.INFO, "    Quadgrams :{0}", sortedQuadgramMap.size());
+        LOG.log(Level.INFO, "    Verbs :{0}", sortedVerbMap.size());
+        LOG.log(Level.INFO, "    Nouns :{0}", sortedNounMap.size());
     }
 
 }

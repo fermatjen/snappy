@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import snappy.model.NeuralGramModel;
-import snappy.model.TrainerModel;
+import snappy.model.serialized.NeuralGramModel;
+import snappy.model.serialized.TrainerModel;
 import static snappy.util.text.StringUtils.replace;
 
 /**

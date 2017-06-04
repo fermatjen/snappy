@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import snappy.model.NeuralGramModel;
+import snappy.model.serialized.NeuralGramModel;
 import static snappy.ngrams.Scorer.getGramScore;
 import static snappy.util.collections.Comparator.sortByComparator;
 import snappy.util.io.CSVUtils;
@@ -82,11 +82,12 @@ public class Predictor {
                     HashMap trigramMap = neuralGramModel.getTrigramMap();
                     HashMap quadgramMap = neuralGramModel.getQuadgramMap();
                     HashMap verbMap = neuralGramModel.getVerbMap();
+                    HashMap nounMap = neuralGramModel.getNounMap();
 
                     //Get class label
                     String label = neuralGramModel.getTrainerModel().getLabel();
 
-                    double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, processLemma);
+                    double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, nounMap, processLemma);
                     //Score for this neuralgram
                     //Eliminate weak biases
                     if (gramScore > 1) {

@@ -16,6 +16,8 @@
  */
 package snappy.model;
 
+import snappy.model.serialized.NeuralGramModel;
+import snappy.model.serialized.TrainerModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -33,6 +35,7 @@ import static snappy.util.io.IOUtils.writeSummary;
  * @author fjenning
  */
 public class Learner extends AbstractLearner {
+
     private static final Logger LOG = Logger.getLogger(Learner.class.getName());
 
     private HashMap unigramMap = new HashMap();
@@ -40,6 +43,7 @@ public class Learner extends AbstractLearner {
     private HashMap trigramMap = new HashMap();
     private HashMap quadgramMap = new HashMap();
     private HashMap verbMap = new HashMap();
+    private HashMap nounMap = new HashMap();
 
     private NeuralGramModel neuralGramModel = null;
 
@@ -52,7 +56,7 @@ public class Learner extends AbstractLearner {
     private int processOnly = 100;
 
     private String dataFile = null;
-    
+
     private boolean processLemma = true;
 
     /**
@@ -81,7 +85,7 @@ public class Learner extends AbstractLearner {
         loadGramsFromIncidentList();
 
         //Second, score all grams
-        incidentList = scoreAllGrams(incidentList, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, processLemma);
+        incidentList = scoreAllGrams(incidentList, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, nounMap, processLemma);
 
         //Third, Re-populate grams
         loadGramsFromIncidentList();
@@ -92,7 +96,7 @@ public class Learner extends AbstractLearner {
     void learnFromPOS() {
         //POS Learner
         loadVerbsFromIncidentList(posScrapper);
-
+        loadNounsFromIncidentList(posScrapper);
     }
 
     /**
@@ -116,21 +120,22 @@ public class Learner extends AbstractLearner {
      * @param modelFile
      */
     public void loadModels(String modelFile) {
-        
+
         neuralGramModel = IOUtils.readModelFromFile(modelFile);
         unigramMap = neuralGramModel.getUnigramMap();
         bigramMap = neuralGramModel.getBigramMap();
         trigramMap = neuralGramModel.getTrigramMap();
         quadgramMap = neuralGramModel.getQuadgramMap();
         verbMap = neuralGramModel.getVerbMap();
+        nounMap = neuralGramModel.getNounMap();
         trainerModel = neuralGramModel.getTrainerModel();
     }
-    
+
     /**
      *
      * @return
      */
-    public NeuralGramModel getModel(){
+    public NeuralGramModel getModel() {
         return neuralGramModel;
     }
 
@@ -138,7 +143,7 @@ public class Learner extends AbstractLearner {
      *
      */
     public void printLearnStats() {
-        printGramStats(unigramMap, bigramMap, trigramMap, quadgramMap, verbMap);
+        printGramStats(unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, nounMap);
     }
 
     private void loadVerbsFromIncidentList(POSScrapper posScrapper) {
@@ -172,6 +177,45 @@ public class Learner extends AbstractLearner {
                         verbMap.put(verb, count);
                     } else {
                         verbMap.put(verb, 1);
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    private void loadNounsFromIncidentList(POSScrapper posScrapper) {
+        nounMap.clear();
+        ArrayList clusters = trainerModel.getClusters();
+
+        //Load POS Tokens
+        for (int i = 0; i < incidentList.size(); i++) {
+            String incident = (String) incidentList.get(i);
+            //Filter for class label
+
+            boolean canParse = false;
+
+            for (int k = 0; k < clusters.size(); k++) {
+                String classLabel = (String) clusters.get(k);
+                if (incident.contains(classLabel)) {
+                    canParse = true;
+                    break;
+                }
+            }
+            if (canParse) {
+                //System.out.println(incident);
+                //Get verb tokens
+                ArrayList nounList = posScrapper.getNounTokens(incident);
+                for (int j = 0; j < nounList.size(); j++) {
+                    String noun = (String) nounList.get(j);
+                    if (nounMap.containsKey(noun)) {
+                        int count = (int) nounMap.get(noun);
+                        count += 1;
+                        nounMap.remove(noun);
+                        nounMap.put(noun, count);
+                    } else {
+                        nounMap.put(noun, 1);
                     }
                 }
             }
@@ -245,6 +289,7 @@ public class Learner extends AbstractLearner {
         neuralGramModel.setTrigramMap(trigramMap);
         neuralGramModel.setQuadgramMap(quadgramMap);
         neuralGramModel.setVerbMap(verbMap);
+        neuralGramModel.setNounMap(nounMap);
         neuralGramModel.setTrainerModel(trainerModel);
 
         //Write model to file
@@ -257,8 +302,11 @@ public class Learner extends AbstractLearner {
      */
     public void printAllGrams() {
         LOG.log(Level.INFO, "Unigram Map\r\n{0}\r\n", unigramMap.toString());
-        LOG.log(Level.INFO, "Unigram Map\r\n{0}\r\n", unigramMap.toString());
         LOG.log(Level.INFO, "Bigram Map\r\n{0}\r\n", bigramMap.toString());
+        LOG.log(Level.INFO, "Trigram Map\r\n{0}\r\n", trigramMap.toString());
+        LOG.log(Level.INFO, "Quadgram Map\r\n{0}\r\n", quadgramMap.toString());
+        LOG.log(Level.INFO, "Verb Map\r\n{0}\r\n", verbMap.toString());
+        LOG.log(Level.INFO, "Noun Map\r\n{0}\r\n", nounMap.toString());
     }
 
 }

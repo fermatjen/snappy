@@ -49,7 +49,7 @@ public class Scorer {
      * @param processLemma
      * @return
      */
-    public static ArrayList scoreAllGrams(ArrayList incidentList, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap, boolean processLemma) {
+    public static ArrayList scoreAllGrams(ArrayList incidentList, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap, HashMap nounMap, boolean processLemma) {
 
         //Second pass
         ArrayList dupIncidentList = new ArrayList();
@@ -61,7 +61,7 @@ public class Scorer {
             //System.out.println("INCIDENT: " + line);
             line = line.trim();
 
-            double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, processLemma);
+            double gramScore = getGramScore(line, unigramMap, bigramMap, trigramMap, quadgramMap, verbMap, nounMap, processLemma);
             if (gramScore > 0) {
                 dupIncidentList.add(line);
             }
@@ -84,7 +84,7 @@ public class Scorer {
      * @param processLemma
      * @return
      */
-    public static double getGramScore(String oline, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap, boolean processLemma) {
+    public static double getGramScore(String oline, HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap, HashMap nounMap, boolean processLemma) {
         double score = 0;
         String line = "";
         NLPModel nlpModel = null;
@@ -168,6 +168,35 @@ public class Scorer {
                 if (line.contains(lgram)) {
 
                     int c1 = (int) verbMap.get(gram);
+                    double s = (c1 * 1) + (gram.length() * 0.05);
+                    score += s;
+                }
+            }
+            
+            Iterator in = nounMap.keySet().iterator();
+            while (in.hasNext()) {
+                String gram = (String) in.next();
+                String lgram = "";
+
+                if (processLemma) {
+                    //Get lemma
+                    Annotation documentn = pipeline.process(gram);
+                    for (CoreMap sentencen : documentn.get(SentencesAnnotation.class)) {
+                        for (CoreLabel tokenn : sentencen.get(TokensAnnotation.class)) {
+                            //String word = token.get(TextAnnotation.class);
+                            lgram = lgram + " " + tokenn.get(LemmaAnnotation.class);
+                            //System.out.println("Word :" + word);
+                            //System.out.println("Lemma :" + gram);
+
+                        }
+                    }
+                } else {
+                    lgram = gram;
+                }
+                lgram = lgram.trim();
+                if (line.contains(lgram)) {
+
+                    int c1 = (int) nounMap.get(gram);
                     double s = (c1 * 1) + (gram.length() * 0.05);
                     score += s;
                 }

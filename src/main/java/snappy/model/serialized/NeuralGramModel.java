@@ -15,11 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package snappy.model;
+package snappy.model.serialized;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 /**
  *
@@ -34,8 +33,19 @@ public class NeuralGramModel implements Serializable{
     private HashMap trigramMap = null;
     private HashMap quadgramMap = null;
     private HashMap verbMap = null;
+    private HashMap nounMap = null;
     
     private TrainerModel trainerModel = null;
+
+    public HashMap getNounMap() {
+        return nounMap;
+    }
+
+    public void setNounMap(HashMap nounMap) {
+        this.nounMap = nounMap;
+    }
+    
+    
 
     /**
      *

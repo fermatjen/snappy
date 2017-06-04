@@ -25,8 +25,8 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.model.Learner;
-import snappy.model.NeuralGramModel;
-import snappy.model.TrainerModel;
+import snappy.model.serialized.NeuralGramModel;
+import snappy.model.serialized.TrainerModel;
 import snappy.ngrams.Predictor;
 import snappy.util.io.ConfigModel;
 import static snappy.util.io.IOUtils.loadBiasMapFromFile;
@@ -133,31 +133,20 @@ public class Snappy {
             } else {
                 //Load the configuration file
                 ConfigModel configModel = loadConfigFile(configFile);
-                dataFile = configModel.getDataFile();
-                summaryFile = configModel.getSummaryFile();
-                modelFile = configModel.getModelFile();
-                trainingFile = configModel.getTrainingFile();
-                biasFile = configModel.getBiasFile();
-                processOnly = configModel.getProcessOnly();
-                mode = (configModel.getMode()).toLowerCase().trim();
-                silent = (configModel.getSilent()).toLowerCase().trim();
-                processLemma = !configModel.isFastmode();
-                singlelabel = configModel.isSinglelabel();
-            }
 
-            if (silent.equals("yes")) {
-                //Flush print stream
-                System.setErr(new PrintStream(new OutputStream() {
-                    @Override
-                    public void write(int b) {
-                    }
-                }));
-                //Flush print stream
-                System.setOut(new PrintStream(new OutputStream() {
-                    @Override
-                    public void write(int b) {
-                    }
-                }));
+                try {
+                    dataFile = configModel.getDataFile();
+                    summaryFile = configModel.getSummaryFile();
+                    modelFile = configModel.getModelFile();
+                    trainingFile = configModel.getTrainingFile();
+                    biasFile = configModel.getBiasFile();
+                    processOnly = configModel.getProcessOnly();
+                    mode = (configModel.getMode()).toLowerCase().trim();
+                    processLemma = !configModel.isFastmode();
+                    singlelabel = configModel.isSinglelabel();
+                } catch (Exception ex) {
+                    LOG.log(Level.SEVERE, "A few config params are missing from the Snappy configuration file.");
+                }
             }
 
             if (mode.equals("testing")) {
