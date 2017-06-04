@@ -67,6 +67,11 @@ public class Predictor {
 
                 String line = (String) linesList.get(i);
                 String oline = line;
+                String pline = line;
+                pline = pline.trim();
+                pline = pline.replaceAll("\\s+", " ");
+                pline = pline.replaceAll("\\p{Punct}+", "");
+                pline = pline.replaceAll(" . ", ". ");
 
                 if (line.length() < threshold) {
                     continue;
@@ -150,13 +155,22 @@ public class Predictor {
                                 //Get best action and best object AS PER THE TRAINING not TESTING)
                                 HashMap verbMap = neuralGramModel.getVerbMap();
                                 HashMap nounMap = neuralGramModel.getNounMap();
+                                HashMap bigramMap = neuralGramModel.getBigramMap();
+                                HashMap trigramMap = neuralGramModel.getTrigramMap();
+                                HashMap quadgramMap = neuralGramModel.getQuadgramMap();
 
                                 //Sort
                                 Map<String, Integer> sortedVerbMap = sortByComparator(verbMap, false);
                                 Map<String, Integer> sortedNounMap = sortByComparator(nounMap, false);
+                                Map<String, Integer> sortedBigramMap = sortByComparator(bigramMap, false);
+                                Map<String, Integer> sortedTrigramMap = sortByComparator(trigramMap, false);
+                                Map<String, Integer> sortedQuadgramMap = sortByComparator(quadgramMap, false);
 
                                 String bestVerb = "NA";
                                 String bestNoun = "NA";
+                                String bestBigram = "NA";
+                                String bestTrigram = null;
+                                String bestQuadgram = null;
 
                                 if (verbMap.size() >= 1) {
                                     for (String verb : sortedVerbMap.keySet()) {
@@ -176,11 +190,45 @@ public class Predictor {
                                         }
                                     }
                                 }
+                                if (bigramMap.size() >= 1) {
+                                    for (String bigram : sortedBigramMap.keySet()) {
+                                        if (pline.contains(bigram)) {
+                                            //Best bigra
+                                            bestBigram = bigram;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (trigramMap.size() >= 1) {
+                                    for (String trigram : sortedTrigramMap.keySet()) {
+                                        if (pline.contains(trigram)) {
+                                            //Best trigra
+                                            bestTrigram = trigram;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (quadgramMap.size() >= 1) {
+                                    for (String quadgram : sortedQuadgramMap.keySet()) {
+                                        if (pline.contains(quadgram)) {
+                                            //Best bigra
+                                            bestQuadgram = quadgram;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                String bgram = "NA";
+                                if (bestQuadgram != null) {
+                                    bgram = bestQuadgram;
+                                } else if (bestTrigram != null) {
+                                    bgram = bestTrigram;
+                                }
 
                                 //Get lemma of best noun and verb
                                 bestNoun = posScrapper.getLemma(bestNoun);
                                 bestVerb = posScrapper.getLemma(bestVerb);
-                                CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), line));
+                                CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), toTitleCase(bestBigram), toTitleCase(bgram), line));
 
                             }
                         }
