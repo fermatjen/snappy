@@ -43,20 +43,44 @@ Edit build/classes/snappy.properties file:
 # This file contains the basic configuration
 # file to externally control Snappy.
 
-# File containing the raw text
+# File containing the raw text. each line in this file
+# is an "Incident". Lines are delimited by the new line char
 dataFile=C:\\SnappyGIT\\data\\data.csv
 
 # File that will be used to write the summary
 summaryFile=C:\\SnappyGIT\\data\\datasum.csv
 
+# Learning bias file. See the example file in the
+# data directory. NGrams with lesser scores can be biased over
+# NGrams with higher scores
+biasFile=C:\\SnappyGIT\\data\\bias.txt
+
 # The models file path where individual models are stored
-modelFile=C:\\SnappyGIT\\data\\
+# For the first time, when there are no models, run with
+# mode = training to generate these files
+modelFile=C:\\SnappyGIT\\data\\DISU_MODELS\\
 
 # Training data set
+# Training data containing labels and synomnys/phrases
+# For example, LABEL (PHRASE1, PHRASE2)
 trainingFile = C:\\SnappyGIT\\data\\labels.txt
 
 # Process only these number of lines in the raw data file
-processOnly = 100
+processOnly = 200
+
+# Select the mode for the current run (testing or training)
+mode = training
+
+# Fast mode will decrease teh training and testing time
+# duration but certain NLP features are disabled. For instance,
+# grams are not lemmatized for comparison
+fastmode = yes
+
+# Single-label or Mult-label prediction
+singlelabel = no
+
+# Multi-variate prediction
+multivariate = yes
 ```
 
 # Training 
@@ -84,27 +108,47 @@ processOnly = 100
 # Testing
 
 ```java
+        int processOnly = 10;
+        boolean processLemma = true;
+        boolean singleLabel = true;
+        
+        //Predicts multiple variables that are not prevoisuly trained
+        boolean isMultivariate = true;
+
+        //A line of text lesser than these chars are not processed for prediction
+        int threshold = 40;
+        
         //Start testing
-        File modelFilePath = new File(modelFile);
+        //Load learning bias vectors
+        HashMap biasMap = snappy.util.io.IOUtils.loadBiasMapFromFile(biasFile);
+
+        //Load from the model dir
+        File modelFilePath = new File(modelDir);
         File children[] = modelFilePath.listFiles();
+        
         ArrayList neuralGramModelList = new ArrayList();
 
-        for (int i = 0; i < children.length; i++) {
-            File mFile = children[i];
+        for (File mFile : children) {
             if (mFile.isFile()) {
                 String fpath = mFile.getAbsolutePath();
+                
                 if (fpath.endsWith(".ser")) {
-                    Learner learner = new Learner(new NeuralGramModel(), null, null, processOnly);
+                
+                    //Create a Learner object
+                    Learner learner = new Learner(new NeuralGramModel(), null, null, processOnly, processLemma);
                     learner.loadModels(fpath);
+                    
                     learner.printLearnStats();
+                    
                     //Get the neural gram model
                     NeuralGramModel neuralGramModel = learner.getModel();
                     neuralGramModelList.add(neuralGramModel);
                 }
+                
             }
         }
 
-        //Write prediction results
-        boolean singleLabel = false;
-        Predictor.writePredictions(dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singleLabel);
+        //Write prediction results to a file
+        Predictor.writePredictions(biasMap, dataFile, neuralGramModelList, "result.csv", processOnly, threshold, singleLabel, isMultivariate, processLemma);
+
 ```
