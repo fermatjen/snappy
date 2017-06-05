@@ -18,15 +18,13 @@
 package snappy.util.collections;
 
 import java.util.Collections;
+import static java.util.Collections.sort;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author fjenning
- */
+
 public class Comparator {
 
     /**
@@ -40,7 +38,7 @@ public class Comparator {
         List<Map.Entry<String, Integer>> list = new LinkedList<>(unsortMap.entrySet());
 
         // Sorting the list based on values
-        Collections.sort(list, (Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) -> {
+        sort(list, (Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) -> {
             if (order) {
                 return o1.getValue().compareTo(o2.getValue());
             } else {
@@ -56,6 +54,9 @@ public class Comparator {
         });
 
         return sortedMap;
+    }
+
+    private Comparator() {
     }
 
 }

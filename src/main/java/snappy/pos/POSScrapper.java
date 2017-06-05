@@ -29,14 +29,21 @@ import edu.stanford.nlp.util.CoreMap;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import static java.util.Collections.sort;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static java.util.regex.Pattern.compile;
 import snappy.model.NLPModel;
 
+/**
+ *
+ * @author fjenning
+ */
 public class POSScrapper {
 
     private static String cleanStartingPeriod(String str) {
@@ -74,6 +81,11 @@ public class POSScrapper {
         swords = new StopWords();
     }
 
+    /**
+     *
+     * @param text
+     * @return
+     */
     public String getLemma(String text) {
         //Get lemma
         String ltext = "";
@@ -126,6 +138,7 @@ public class POSScrapper {
     /**
      *
      * @param raw
+     * @param flatten
      * @return
      */
     public ArrayList getNounTokens(String raw, boolean flatten) {
@@ -202,6 +215,7 @@ public class POSScrapper {
     /**
      *
      * @param raw
+     * @param flatten
      * @return
      */
     public ArrayList getVerbTokens(String raw, boolean flatten) {
@@ -276,6 +290,12 @@ public class POSScrapper {
         return phrases;
     }
 
+    /**
+     *
+     * @param raw
+     * @param phraseIdentifier
+     * @return
+     */
     public ArrayList getPhrases(String raw, String phraseIdentifier) {
 
         //System.out.println(raw);
@@ -377,7 +397,7 @@ public class POSScrapper {
         hs.addAll(phrases);
         phrases.clear();
         phrases.addAll(hs);
-        Collections.sort(phrases);
+        sort(phrases);
 
         return phrases;
     }
@@ -393,7 +413,7 @@ public class POSScrapper {
         }
         //Computes the POS signature of a text string
         //System.out.println(text);
-        Pattern p = Pattern.compile("\\((.*?)\\)");
+        Pattern p = compile("\\((.*?)\\)");
         String posSignature = "";
         Matcher m = p.matcher(text);
         while (m.find()) {
@@ -420,5 +440,6 @@ public class POSScrapper {
         //System.out.println(posSignature);
         return posSignature;
     }
+    private static final Logger LOG = Logger.getLogger(POSScrapper.class.getName());
 
 }

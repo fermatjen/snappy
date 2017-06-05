@@ -22,7 +22,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import snappy.model.serialized.TrainerModel;
 
 /**
@@ -30,7 +32,7 @@ import snappy.model.serialized.TrainerModel;
  * @author fjenning
  */
 public class GramUtils {
-    private static final Logger LOG = Logger.getLogger(GramUtils.class.getName());
+    private static final Logger LOG = getLogger(GramUtils.class.getName());
     
     /**
      *
@@ -97,10 +99,13 @@ public class GramUtils {
             }
 
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, "[Snappy] {0}", ex.getMessage());
+            LOG.log(SEVERE, "[Snappy] {0}", ex.getMessage());
         }
         
         return incidentList;
+    }
+
+    private GramUtils() {
     }
     
 }

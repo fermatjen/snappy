@@ -17,6 +17,8 @@
 
 package snappy.util.io;
 
+import java.util.logging.Logger;
+
 /**
  *
  * @author fjenning
@@ -35,10 +37,18 @@ public class ConfigModel {
     private boolean singlelabel = true;
     private boolean multivariate = false;
 
+    /**
+     *
+     * @return
+     */
     public boolean isMultivariate() {
         return multivariate;
     }
 
+    /**
+     *
+     * @param multivariate
+     */
     public void setMultivariate(boolean multivariate) {
         this.multivariate = multivariate;
     }
@@ -77,10 +87,18 @@ public class ConfigModel {
         this.fastmode = fastmode;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getBiasFile() {
         return biasFile;
     }
 
+    /**
+     *
+     * @param biasFile
+     */
     public void setBiasFile(String biasFile) {
         this.biasFile = biasFile;
     }
@@ -198,6 +216,7 @@ public class ConfigModel {
     public void setMode(String mode) {
         this.mode = mode;
     }
+    private static final Logger LOG = Logger.getLogger(ConfigModel.class.getName());
     
     
     

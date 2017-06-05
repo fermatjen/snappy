@@ -18,6 +18,7 @@
 package snappy.pos;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 /**
  *
@@ -711,5 +712,6 @@ public class StopWords {
         word = word.trim();
         return swords.contains(word);
     }
+    private static final Logger LOG = Logger.getLogger(StopWords.class.getName());
 
 }

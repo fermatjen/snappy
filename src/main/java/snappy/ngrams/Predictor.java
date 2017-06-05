@@ -5,11 +5,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import static java.util.Arrays.asList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
 import snappy.model.NLPModel;
 import snappy.model.serialized.NeuralGramModel;
@@ -17,6 +20,7 @@ import static snappy.ngrams.Scorer.getGramScore;
 import snappy.pos.POSScrapper;
 import static snappy.util.collections.Comparator.sortByComparator;
 import snappy.util.io.CSVUtils;
+import static snappy.util.io.CSVUtils.writeLine;
 import static snappy.util.io.IOUtils.getAllLinesFromFile;
 import static snappy.util.text.StringUtils.replace;
 import static snappy.util.text.StringUtils.toTitleCase;
@@ -31,6 +35,7 @@ public class Predictor {
 
     /**
      *
+     * @param biasMap
      * @param dataFile
      * @param neuralGramModelList
      * @param outFile
@@ -38,6 +43,7 @@ public class Predictor {
      * @param threshold
      * @param singleLabel
      * @param processLemma
+     * @param isMultivariate
      */
     public static void writePredictions(HashMap biasMap, String dataFile, ArrayList neuralGramModelList, String outFile, int processOnly, int threshold, boolean singleLabel, boolean isMultivariate, boolean processLemma) {
 
@@ -50,7 +56,7 @@ public class Predictor {
             outFileWriter = new FileWriter(outFile);
             ArrayList linesList = getAllLinesFromFile(dataFile, processOnly, false);
             for (int i = 0; i < linesList.size(); i++) {
-
+                LOG.log(INFO, "Processing {0} of {1}", new Object[]{i+1, linesList.size()});
                 String line = (String) linesList.get(i);
                 String oline = line;
                 String pline = line;
@@ -102,9 +108,9 @@ public class Predictor {
                     if (singleLabel) {
 
                         //Check prediction bias
-                        LOG.log(Level.INFO, "Predicted: {0}", predictedLabel);
+                        LOG.log(INFO, "Predicted: {0}", predictedLabel);
                         if (biasMap.containsKey(lpredictedLabel)) {
-                            LOG.log(Level.INFO, "Bias found for {0}", predictedLabel);
+                            LOG.log(INFO, "Bias found for {0}", predictedLabel);
 
                             //Find the weaker player/label
                             ArrayList playerList = (ArrayList) biasMap.get(lpredictedLabel);
@@ -242,33 +248,36 @@ public class Predictor {
                                     bestPhrase = (bestPhrase.substring(loc, bestPhrase.length())).trim();
                                 }
 
-                                List relatedGramsSubList = (List) relatedGramsList.subList(0, 10);
+                                List relatedGramsSubList = relatedGramsList.subList(0, 10);
                                 String relatedGramsListString = replace(relatedGramsSubList.toString(), ", ", " | ", 0);
 
-                                CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), toTitleCase(bestPhrase), toTitleCase(bestGrams), toTitleCase(relatedGramsListString), line));
+                                writeLine(outFileWriter, asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), toTitleCase(bestPhrase), toTitleCase(bestGrams), toTitleCase(relatedGramsListString), line));
 
                             }
                         }
 
                     } else //Not-multivariate
                      if (singleLabel) {
-                            CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), line));
+                            writeLine(outFileWriter, asList(toTitleCase(predictedLabel), line));
                         } else {
                             //Print all labels and their freqs
                             String neuralScores = sortedNeuralScoreMap.toString();
                             neuralScores = replace(neuralScores, ",", " ", 0);
-                            CSVUtils.writeLine(outFileWriter, Arrays.asList(neuralScores, line));
+                            writeLine(outFileWriter, asList(neuralScores, line));
                         }
                 }
             }
         } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         } finally {
             try {
                 outFileWriter.close();
             } catch (IOException ex) {
-                LOG.log(Level.SEVERE, null, ex);
+                LOG.log(SEVERE, null, ex);
             }
         }
+    }
+
+    private Predictor() {
     }
 }

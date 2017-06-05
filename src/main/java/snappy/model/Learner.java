@@ -1,25 +1,12 @@
-/*
- * Copyright (C) 2017 Frank Jennings
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+
 package snappy.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
+import static java.util.logging.Level.INFO;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import snappy.model.serialized.NeuralGramModel;
 import snappy.model.serialized.TrainerModel;
 import snappy.ngrams.Populater;
@@ -28,6 +15,8 @@ import snappy.pos.POSScrapper;
 import static snappy.util.grams.GramStats.printGramStats;
 import static snappy.util.grams.GramUtils.loadGramsFromDataFile;
 import snappy.util.io.IOUtils;
+import static snappy.util.io.IOUtils.readModelFromFile;
+import static snappy.util.io.IOUtils.writeModelToFile;
 import static snappy.util.io.IOUtils.writeSummary;
 
 /**
@@ -36,7 +25,7 @@ import static snappy.util.io.IOUtils.writeSummary;
  */
 public class Learner extends AbstractLearner {
 
-    private static final Logger LOG = Logger.getLogger(Learner.class.getName());
+    private static final Logger LOG = getLogger(Learner.class.getName());
 
     private HashMap unigramMap = new HashMap();
     private HashMap bigramMap = new HashMap();
@@ -121,7 +110,7 @@ public class Learner extends AbstractLearner {
      */
     public void loadModels(String modelFile) {
 
-        neuralGramModel = IOUtils.readModelFromFile(modelFile);
+        neuralGramModel = readModelFromFile(modelFile);
         unigramMap = neuralGramModel.getUnigramMap();
         bigramMap = neuralGramModel.getBigramMap();
         trigramMap = neuralGramModel.getTrigramMap();
@@ -293,7 +282,7 @@ public class Learner extends AbstractLearner {
         neuralGramModel.setTrainerModel(trainerModel);
 
         //Write model to file
-        IOUtils.writeModelToFile(outFile, neuralGramModel);
+        writeModelToFile(outFile, neuralGramModel);
 
     }
 
@@ -301,12 +290,12 @@ public class Learner extends AbstractLearner {
      *
      */
     public void printAllGrams() {
-        LOG.log(Level.INFO, "Unigram Map\r\n{0}\r\n", unigramMap.toString());
-        LOG.log(Level.INFO, "Bigram Map\r\n{0}\r\n", bigramMap.toString());
-        LOG.log(Level.INFO, "Trigram Map\r\n{0}\r\n", trigramMap.toString());
-        LOG.log(Level.INFO, "Quadgram Map\r\n{0}\r\n", quadgramMap.toString());
-        LOG.log(Level.INFO, "Verb Map\r\n{0}\r\n", verbMap.toString());
-        LOG.log(Level.INFO, "Noun Map\r\n{0}\r\n", nounMap.toString());
+        LOG.log(INFO, "Unigram Map\r\n{0}\r\n", unigramMap.toString());
+        LOG.log(INFO, "Bigram Map\r\n{0}\r\n", bigramMap.toString());
+        LOG.log(INFO, "Trigram Map\r\n{0}\r\n", trigramMap.toString());
+        LOG.log(INFO, "Quadgram Map\r\n{0}\r\n", quadgramMap.toString());
+        LOG.log(INFO, "Verb Map\r\n{0}\r\n", verbMap.toString());
+        LOG.log(INFO, "Noun Map\r\n{0}\r\n", nounMap.toString());
     }
 
 }

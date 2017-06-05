@@ -19,9 +19,11 @@ package snappy.ngrams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 import snappy.model.GramModel;
 import snappy.ngrams.iterator.NGramIterator;
 import snappy.util.grams.GramUtils;
+import static snappy.util.grams.GramUtils.isFilteredGram;
 
 /**
  *
@@ -60,7 +62,7 @@ public class Populater {
                 continue;
             }
 
-            if (GramUtils.isFilteredGram(filterModelList, ngram)) {
+            if (isFilteredGram(filterModelList, ngram)) {
 
                 if (ngramMap.containsKey(ngram)) {
                     int count = (int) ngramMap.get(ngram);
@@ -77,5 +79,6 @@ public class Populater {
         gramModel.setNgramMap(ngramMap);
 
     }
+    private static final Logger LOG = Logger.getLogger(Populater.class.getName());
 
 }

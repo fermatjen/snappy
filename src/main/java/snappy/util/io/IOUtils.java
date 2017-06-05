@@ -26,11 +26,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import static java.lang.Integer.parseInt;
+import static java.lang.System.exit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import snappy.model.serialized.NeuralGramModel;
 import snappy.model.serialized.TrainerModel;
 import static snappy.util.text.StringUtils.replace;
@@ -41,7 +45,7 @@ import static snappy.util.text.StringUtils.replace;
  */
 public class IOUtils {
 
-    private static final Logger LOG = Logger.getLogger(IOUtils.class.getName());
+    private static final Logger LOG = getLogger(IOUtils.class.getName());
 
     /**
      *
@@ -56,7 +60,7 @@ public class IOUtils {
 
             return neuralGramModel;
         } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(IOUtils.class.getName()).log(SEVERE, null, ex);
         }
 
         return null;
@@ -108,7 +112,7 @@ public class IOUtils {
                                 configModel.setBiasFile(configValue);
                             }
                             if (configKey.equals("processOnly")) {
-                                configModel.setProcessOnly(Integer.parseInt(configValue));
+                                configModel.setProcessOnly(parseInt(configValue));
                             }
                             if (configKey.equals("mode")) {
                                 configModel.setMode(configValue);
@@ -142,13 +146,18 @@ public class IOUtils {
                 }
             }
         } catch (IOException | NumberFormatException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage());
-            System.exit(0);
+            LOG.log(SEVERE, ex.getMessage());
+            exit(0);
         }
 
         return configModel;
     }
 
+    /**
+     *
+     * @param biasFile
+     * @return
+     */
     public static HashMap loadBiasMapFromFile(String biasFile) {
 
         HashMap biasMap = new HashMap();
@@ -196,7 +205,7 @@ public class IOUtils {
                 }
             }
         } catch (IOException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage());
+            LOG.log(SEVERE, ex.getMessage());
         }
 
         return biasMap;
@@ -253,7 +262,7 @@ public class IOUtils {
                 }
             }
         } catch (IOException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage());
+            LOG.log(SEVERE, ex.getMessage());
         }
 
         return trainerModelList;
@@ -269,7 +278,7 @@ public class IOUtils {
             oos.writeObject(neuralGramModel);
             oos.flush();
         } catch (IOException ex) {
-            Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(IOUtils.class.getName()).log(SEVERE, null, ex);
         }
     }
 
@@ -382,15 +391,18 @@ public class IOUtils {
             }
 
         } catch (IOException ex) {
-            Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
+            getLogger(IOUtils.class.getName()).log(SEVERE, null, ex);
         } finally {
             try {
                 writer.close();
             } catch (IOException ex) {
-                Logger.getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
+                getLogger(IOUtils.class.getName()).log(SEVERE, null, ex);
             }
         }
 
+    }
+
+    private IOUtils() {
     }
 
 }

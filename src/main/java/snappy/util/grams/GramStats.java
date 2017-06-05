@@ -20,7 +20,9 @@ package snappy.util.grams;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+import static java.util.logging.Level.INFO;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import static snappy.util.collections.Comparator.sortByComparator;
 
 /**
@@ -29,7 +31,7 @@ import static snappy.util.collections.Comparator.sortByComparator;
  */
 public class GramStats {
 
-    private static final Logger LOG = Logger.getLogger(GramStats.class.getName());
+    private static final Logger LOG = getLogger(GramStats.class.getName());
 
     /**
      *
@@ -38,6 +40,7 @@ public class GramStats {
      * @param trigramMap
      * @param quadgramMap
      * @param verbMap
+     * @param nounMap
      */
     public static void printGramStats(HashMap unigramMap, HashMap bigramMap, HashMap trigramMap, HashMap quadgramMap, HashMap verbMap, HashMap nounMap) {
         Map<String, Integer> sortedUnigramMap = sortByComparator(unigramMap, false);
@@ -46,12 +49,15 @@ public class GramStats {
         Map<String, Integer> sortedQuadgramMap = sortByComparator(quadgramMap, false);
         Map<String, Integer> sortedVerbMap = sortByComparator(verbMap, false);
         Map<String, Integer> sortedNounMap = sortByComparator(nounMap, false);
-        LOG.log(Level.INFO, "    Unigrams :{0}", sortedUnigramMap.size());
-        LOG.log(Level.INFO, "    Bigrams :{0}", sortedBigramMap.size());
-        LOG.log(Level.INFO, "    Trigrams :{0}", sortedTrigramMap.size());
-        LOG.log(Level.INFO, "    Quadgrams :{0}", sortedQuadgramMap.size());
-        LOG.log(Level.INFO, "    Verbs :{0}", sortedVerbMap.size());
-        LOG.log(Level.INFO, "    Nouns :{0}", sortedNounMap.size());
+        LOG.log(INFO, "    Unigrams :{0}", sortedUnigramMap.size());
+        LOG.log(INFO, "    Bigrams :{0}", sortedBigramMap.size());
+        LOG.log(INFO, "    Trigrams :{0}", sortedTrigramMap.size());
+        LOG.log(INFO, "    Quadgrams :{0}", sortedQuadgramMap.size());
+        LOG.log(INFO, "    Verbs :{0}", sortedVerbMap.size());
+        LOG.log(INFO, "    Nouns :{0}", sortedNounMap.size());
+    }
+
+    private GramStats() {
     }
 
 }

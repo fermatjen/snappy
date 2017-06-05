@@ -1,19 +1,4 @@
-/*
- * Copyright (C) 2017 Frank Jennings
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+
 package snappy;
 
 import java.io.File;
@@ -21,6 +6,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
+import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
 import snappy.model.Learner;
 import snappy.model.serialized.NeuralGramModel;
@@ -31,6 +18,9 @@ import static snappy.util.io.IOUtils.loadBiasMapFromFile;
 import static snappy.util.io.IOUtils.loadConfigFile;
 import static snappy.util.io.IOUtils.loadTrainingFile;
 import static snappy.util.text.StringUtils.replace;
+
+import java.util.logging.Logger;
+import static snappy.ngrams.Predictor.writePredictions;
 
 /**
  *
@@ -48,7 +38,7 @@ public class Snappy {
     private static String trainingFile = null;
     private static int processOnly = 10;
     private static String mode = null;
-    private static String silent = null;
+    private static final String silent = null;
     private static boolean processLemma = true;
     private static boolean singlelabel = true;
     private static boolean isMultivariate = true;
@@ -89,7 +79,7 @@ public class Snappy {
         //Load learning bias vectors
         HashMap biasMap = loadBiasMapFromFile(biasFile);
         if (biasMap.size() > 0) {
-            LOG.log(Level.INFO, "Loading biases: {0}", biasMap.toString());
+            LOG.log(INFO, "Loading biases: {0}", biasMap.toString());
         }
 
         File modelFilePath = new File(modelFile);
@@ -111,7 +101,7 @@ public class Snappy {
         }
 
         //Write prediction results
-        Predictor.writePredictions(biasMap, dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singlelabel, isMultivariate, processLemma);
+        writePredictions(biasMap, dataFile, neuralGramModelList, summaryFile, processOnly, threshold, singlelabel, isMultivariate, processLemma);
 
     }
 
@@ -145,7 +135,7 @@ public class Snappy {
                     singlelabel = configModel.isSinglelabel();
                     isMultivariate = configModel.isMultivariate();
                 } catch (Exception ex) {
-                    LOG.log(Level.SEVERE, "A few config params are missing from the Snappy configuration file.");
+                    LOG.log(SEVERE, "A few config params are missing from the Snappy configuration file.");
                 }
             }
 
@@ -156,7 +146,7 @@ public class Snappy {
             }
 
         } catch (URISyntaxException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
 
     }

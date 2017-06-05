@@ -27,7 +27,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 import snappy.model.NLPModel;
 
 /**
@@ -36,7 +38,7 @@ import snappy.model.NLPModel;
  */
 public class Scorer {
 
-    private static final Logger LOG = Logger.getLogger(Scorer.class.getName());
+    private static final Logger LOG = getLogger(Scorer.class.getName());
 
     /**
      *
@@ -46,6 +48,7 @@ public class Scorer {
      * @param trigramMap
      * @param quadgramMap
      * @param verbMap
+     * @param nounMap
      * @param processLemma
      * @return
      */
@@ -81,6 +84,7 @@ public class Scorer {
      * @param trigramMap
      * @param quadgramMap
      * @param verbMap
+     * @param nounMap
      * @param processLemma
      * @return
      */
@@ -287,10 +291,13 @@ public class Scorer {
                 }
             }
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, "[Snappy] Error while scoring ngrams");
+            LOG.log(SEVERE, "[Snappy] Error while scoring ngrams");
         }
 
         return score;
+    }
+
+    private Scorer() {
     }
 
 }

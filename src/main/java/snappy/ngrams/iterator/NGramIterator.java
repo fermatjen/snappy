@@ -17,6 +17,7 @@
 package snappy.ngrams.iterator;
 
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 /**
  *
@@ -57,4 +58,5 @@ public class NGramIterator implements Iterator<String> {
     public void remove() {
         throw new UnsupportedOperationException();
     }
+    private static final Logger LOG = Logger.getLogger(NGramIterator.class.getName());
 }

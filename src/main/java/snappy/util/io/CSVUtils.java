@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 import java.util.logging.Level;
+import static java.util.logging.Level.SEVERE;
 import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -29,7 +31,7 @@ import java.util.logging.Logger;
 public class CSVUtils {
 
     private static final char DEFAULT_SEPARATOR = ',';
-    private static final Logger LOG = Logger.getLogger(CSVUtils.class.getName());
+    private static final Logger LOG = getLogger(CSVUtils.class.getName());
 
     /**
      *
@@ -68,7 +70,6 @@ public class CSVUtils {
      * @param values
      * @param separators
      * @param customQuote
-     * @throws IOException
      */
     public static void writeLine(Writer w, List<String> values, char separators, char customQuote) {
 
@@ -96,9 +97,12 @@ public class CSVUtils {
             sb.append("\n");
             w.append(sb.toString());
         } catch (IOException ex) {
-            LOG.log(Level.SEVERE, null, ex);
+            LOG.log(SEVERE, null, ex);
         }
 
+    }
+
+    private CSVUtils() {
     }
 
 }

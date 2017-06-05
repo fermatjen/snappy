@@ -16,10 +16,9 @@
  */
 package snappy.util.text;
 
-/**
- *
- * @author fjenning
- */
+import static java.lang.Character.isSpaceChar;
+
+
 public class StringUtils {
 
     /**
@@ -56,12 +55,17 @@ public class StringUtils {
         }
     }
 
+    /**
+     *
+     * @param input
+     * @return
+     */
     public static String toTitleCase(String input) {
         StringBuilder titleCase = new StringBuilder();
         boolean nextTitleCase = true;
 
         for (char c : input.toCharArray()) {
-            if (Character.isSpaceChar(c)) {
+            if (isSpaceChar(c)) {
                 nextTitleCase = true;
             } else if (nextTitleCase) {
                 c = Character.toTitleCase(c);
@@ -72,6 +76,9 @@ public class StringUtils {
         }
 
         return titleCase.toString();
+    }
+
+    private StringUtils() {
     }
 
 }
