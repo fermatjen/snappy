@@ -1,3 +1,5 @@
+![Build Status](https://travis-ci.org/fermatjen/snappy.svg?branch=master)
+
 # Snappy
 A Java ML API for compacting and classifying user comments. Snappy is based on a sophisticated NLP pipeline that can:
 
