@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -166,6 +167,7 @@ public class Predictor {
                                 String bestNoun = "NA";
                                 String bestBigram = "NA";
                                 ArrayList bestGramsList = new ArrayList();
+                                ArrayList relatedGramsList = new ArrayList();
 
                                 //Find best verb
                                 if (verbMap.size() >= 1) {
@@ -180,25 +182,25 @@ public class Predictor {
                                 }
 
                                 if (verbMap.size() >= 1) {
-                                    for (String verb : sortedVerbMap.keySet()) {
-                                        if (lineVerbList.contains(verb)) {
-                                            verb = posScrapper.getLemma(verb);
-                                            if (!bestGramsList.contains(verb)) {
-                                                bestGramsList.add(verb);
-                                            }
+                                    sortedVerbMap.keySet().stream().map((verb) -> posScrapper.getLemma(verb)).map((verb) -> {
+                                        if (!relatedGramsList.contains(verb)) {
+                                            relatedGramsList.add(verb);
                                         }
-                                    }
+                                        return verb;
+                                    }).filter((verb) -> (lineVerbList.contains(verb))).filter((verb) -> (!bestGramsList.contains(verb))).forEach((verb) -> {
+                                        bestGramsList.add(verb);
+                                    });
                                 }
-                                
+
                                 if (nounMap.size() >= 1) {
-                                    for (String noun : sortedNounMap.keySet()) {
-                                        if (lineNounList.contains(noun)) {
-                                            noun = posScrapper.getLemma(noun);
-                                            if (!bestGramsList.contains(noun)) {
-                                                bestGramsList.add(noun);
-                                            }
+                                    sortedNounMap.keySet().stream().map((noun) -> posScrapper.getLemma(noun)).map((noun) -> {
+                                        if (!relatedGramsList.contains(noun)) {
+                                            relatedGramsList.add(noun);
                                         }
-                                    }
+                                        return noun;
+                                    }).filter((noun) -> (lineNounList.contains(noun))).filter((noun) -> (!bestGramsList.contains(noun))).forEach((noun) -> {
+                                        bestGramsList.add(noun);
+                                    });
                                 }
 
                                 if (bigramMap.size() >= 1) {
@@ -215,9 +217,12 @@ public class Predictor {
                                 bestNoun = posScrapper.getLemma(bestNoun);
                                 bestVerb = posScrapper.getLemma(bestVerb);
                                 String bestGrams = bestGramsList.toString();
-                                bestGrams = replace(bestGrams,", "," | ",0);
-                                
-                                CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), toTitleCase(bestBigram), toTitleCase(bestGrams), line));
+                                bestGrams = replace(bestGrams, ", ", " | ", 0);
+
+                                List relatedGramsSubList = (List) relatedGramsList.subList(0, 5);
+                                String relatedGramsListString = replace(relatedGramsSubList.toString(), ", ", " | ", 0);
+
+                                CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), toTitleCase(bestBigram), toTitleCase(bestGrams), toTitleCase(relatedGramsListString), line));
 
                             }
                         }
