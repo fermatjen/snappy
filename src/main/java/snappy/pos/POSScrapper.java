@@ -276,12 +276,13 @@ public class POSScrapper {
         return phrases;
     }
 
-    private ArrayList getPhrases(String raw, String phraseIdentifier) {
+    public ArrayList getPhrases(String raw, String phraseIdentifier) {
 
         //System.out.println(raw);
-        boolean isNounExtraction = true;
+        raw = getPennString(raw);
+        //boolean isNounExtraction = true;
 
-        isNounExtraction = phraseIdentifier.contains("NP");
+        //isNounExtraction = phraseIdentifier.contains("NP");
         int pointer = 0;
         ArrayList phrases = new ArrayList();
         while (true) {

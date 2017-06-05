@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import snappy.model.NLPModel;
@@ -219,17 +220,54 @@ public class Predictor {
                                 String bestGrams = bestGramsList.toString();
                                 bestGrams = replace(bestGrams, ", ", " | ", 0);
 
-                                List relatedGramsSubList = (List) relatedGramsList.subList(0, 5);
+                                //Get Phrases
+                                ArrayList nounPhraseList = posScrapper.getPhrases(oline, "NP");
+                                ArrayList allPhraseList = posScrapper.getPhrases(oline, "VP");
+                                allPhraseList.addAll(nounPhraseList);
+
+                                String bestPhrase = "NA";
+                                for (int q = 0; q < allPhraseList.size(); q++) {
+                                    String bestPhraseCandidate = (String) allPhraseList.get(q);
+                                    if (bestPhraseCandidate.contains(bestNoun) && bestPhraseCandidate.contains(bestVerb)) {
+                                        bestPhrase = bestPhraseCandidate;
+                                        break;
+                                    } else if (bestPhraseCandidate.contains(bestNoun) || bestPhraseCandidate.contains(bestVerb)) {
+                                        bestPhrase = bestPhraseCandidate;
+                                    }
+
+                                }
+
+                                bestPhrase = bestPhrase.trim();
+
+                                if (bestPhrase.equals("NA")) {
+                                    bestPhrase = bestBigram;
+                                }
+                                if (bestPhrase.contains("-lrb") || bestPhrase.contains("-rrb")) {
+                                    bestPhrase = bestBigram;
+                                }
+
+                                bestPhrase = bestPhrase.trim();
+
+                                if (!bestPhrase.contains(" ")) {
+                                    bestPhrase = bestBigram;
+                                }
+
+                                if (bestPhrase.startsWith("'")) {
+                                    //truncate the word
+                                    int loc = bestPhrase.indexOf(" ", 0);
+                                    bestPhrase = (bestPhrase.substring(loc, bestPhrase.length())).trim();
+                                }
+
+                                List relatedGramsSubList = (List) relatedGramsList.subList(0, 10);
                                 String relatedGramsListString = replace(relatedGramsSubList.toString(), ", ", " | ", 0);
 
-                                CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), toTitleCase(bestBigram), toTitleCase(bestGrams), toTitleCase(relatedGramsListString), line));
+                                CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), toTitleCase(bestPhrase), toTitleCase(bestGrams), toTitleCase(relatedGramsListString), line));
 
                             }
                         }
 
                     } else //Not-multivariate
-                    {
-                        if (singleLabel) {
+                     if (singleLabel) {
                             CSVUtils.writeLine(outFileWriter, Arrays.asList(toTitleCase(predictedLabel), line));
                         } else {
                             //Print all labels and their freqs
@@ -237,7 +275,6 @@ public class Predictor {
                             neuralScores = replace(neuralScores, ",", " ", 0);
                             CSVUtils.writeLine(outFileWriter, Arrays.asList(neuralScores, line));
                         }
-                    }
                 }
             }
         } catch (IOException ex) {
