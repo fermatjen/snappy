@@ -16,12 +16,12 @@
  */
 package snappy.model;
 
-import snappy.model.serialized.NeuralGramModel;
-import snappy.model.serialized.TrainerModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import snappy.model.serialized.NeuralGramModel;
+import snappy.model.serialized.TrainerModel;
 import snappy.ngrams.Populater;
 import static snappy.ngrams.Scorer.scoreAllGrams;
 import snappy.pos.POSScrapper;

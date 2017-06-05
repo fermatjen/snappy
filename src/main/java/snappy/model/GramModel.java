@@ -18,7 +18,6 @@
 package snappy.model;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 /**
  *

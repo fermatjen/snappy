@@ -23,7 +23,6 @@ import edu.stanford.nlp.trees.GrammaticalStructureFactory;
 import edu.stanford.nlp.trees.PennTreebankLanguagePack;
 import edu.stanford.nlp.trees.TreebankLanguagePack;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 /**
  *

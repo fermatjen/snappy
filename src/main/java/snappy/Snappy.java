@@ -17,8 +17,6 @@
 package snappy;
 
 import java.io.File;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;

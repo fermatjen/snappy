@@ -97,7 +97,7 @@ public class GramUtils {
             }
 
         } catch (Exception ex) {
-            LOG.log(Level.SEVERE, "[Snappy] "+ex.getMessage());
+            LOG.log(Level.SEVERE, "[Snappy] {0}", ex.getMessage());
         }
         
         return incidentList;
