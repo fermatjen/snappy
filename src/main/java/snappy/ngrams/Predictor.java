@@ -1,4 +1,3 @@
-
 package snappy.ngrams;
 
 import java.io.FileWriter;
@@ -10,6 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.SEVERE;
@@ -56,7 +56,7 @@ public class Predictor {
             outFileWriter = new FileWriter(outFile);
             ArrayList linesList = getAllLinesFromFile(dataFile, processOnly, false);
             for (int i = 0; i < linesList.size(); i++) {
-                LOG.log(INFO, "Processing {0} of {1}", new Object[]{i+1, linesList.size()});
+                LOG.log(INFO, "Processing {0} of {1}", new Object[]{i + 1, linesList.size()});
                 String line = (String) linesList.get(i);
                 String oline = line;
                 String pline = line;
@@ -148,15 +148,22 @@ public class Predictor {
                                 HashMap verbMap = neuralGramModel.getVerbMap();
                                 HashMap nounMap = neuralGramModel.getNounMap();
                                 HashMap bigramMap = neuralGramModel.getBigramMap();
+                                //HashMap trigramMap = neuralGramModel.getTrigramMap();
+                                //HashMap quadgramMap = neuralGramModel.getQuadgramMap();
 
                                 //Sort
                                 Map<String, Integer> sortedVerbMap = sortByComparator(verbMap, false);
                                 Map<String, Integer> sortedNounMap = sortByComparator(nounMap, false);
                                 Map<String, Integer> sortedBigramMap = sortByComparator(bigramMap, false);
+                                //Map<String, Integer> sortedTrigramMap = sortByComparator(trigramMap, false);
+                                //Map<String, Integer> sortedQuadgramMap = sortByComparator(quadgramMap, false);
 
                                 String bestVerb = "NA";
                                 String bestNoun = "NA";
                                 String bestBigram = "NA";
+                                //String bestTrigram = "NA";
+                                //String bestQuadgram = "NA";
+
                                 ArrayList bestGramsList = new ArrayList();
                                 ArrayList relatedGramsList = new ArrayList();
 
@@ -174,6 +181,7 @@ public class Predictor {
 
                                 if (verbMap.size() >= 1) {
                                     sortedVerbMap.keySet().stream().map((verb) -> posScrapper.getLemma(verb)).map((verb) -> {
+                                        //verb = toTitleCase(verb);
                                         if (!relatedGramsList.contains(verb)) {
                                             relatedGramsList.add(verb);
                                         }
@@ -185,6 +193,7 @@ public class Predictor {
 
                                 if (nounMap.size() >= 1) {
                                     sortedNounMap.keySet().stream().map((noun) -> posScrapper.getLemma(noun)).map((noun) -> {
+                                        //noun = toTitleCase(noun);
                                         if (!relatedGramsList.contains(noun)) {
                                             relatedGramsList.add(noun);
                                         }
@@ -203,7 +212,26 @@ public class Predictor {
                                         }
                                     }
                                 }
-
+                                /*
+                                if (trigramMap.size() >= 1) {
+                                    for (String trigram : sortedTrigramMap.keySet()) {
+                                        if (pline.contains(trigram)) {
+                                            //Best bigra
+                                            bestTrigram = trigram;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (quadgramMap.size() >= 1) {
+                                    for (String quadgram : sortedQuadgramMap.keySet()) {
+                                        if (pline.contains(quadgram)) {
+                                            //Best bigra
+                                            bestQuadgram = quadgram;
+                                            break;
+                                        }
+                                    }
+                                }
+                                 */
                                 //Get lemma of best noun and verb
                                 bestNoun = posScrapper.getLemma(bestNoun);
                                 bestVerb = posScrapper.getLemma(bestVerb);
@@ -216,27 +244,62 @@ public class Predictor {
                                 allPhraseList.addAll(nounPhraseList);
 
                                 String bestPhrase = "NA";
+                                String longestPhrase = "";
+                                int longestPhraseWords = 0;
+
                                 for (int q = 0; q < allPhraseList.size(); q++) {
                                     String bestPhraseCandidate = (String) allPhraseList.get(q);
+                                    bestPhraseCandidate = bestPhraseCandidate.replaceAll("\\s+", " ");
+                                    bestPhraseCandidate = bestPhraseCandidate.replaceAll("\\p{Punct}+", "");
+
+                                    int spaces = bestPhraseCandidate == null ? 0 : bestPhraseCandidate.length() - bestPhraseCandidate.replace(" ", "").length();
+                                    if (spaces > longestPhraseWords) {
+                                        longestPhrase = bestPhraseCandidate;
+                                        longestPhraseWords = spaces;
+                                    }
+
                                     if (bestPhraseCandidate.contains(bestNoun) && bestPhraseCandidate.contains(bestVerb)) {
                                         bestPhrase = bestPhraseCandidate;
-                                        break;
                                     } else if (bestPhraseCandidate.contains(bestNoun) || bestPhraseCandidate.contains(bestVerb)) {
                                         bestPhrase = bestPhraseCandidate;
                                     }
 
                                 }
 
-                                bestPhrase = bestPhrase.trim();
-
                                 if (bestPhrase.equals("NA")) {
                                     bestPhrase = bestBigram;
                                 }
-                                if (bestPhrase.contains("-lrb") || bestPhrase.contains("-rrb")) {
+                                if (bestPhrase.contains("lrb") || bestPhrase.contains("rrb")) {
                                     bestPhrase = bestBigram;
                                 }
+                                if (longestPhrase.contains("lrb") || longestPhrase.contains("rrb")) {
+                                    longestPhrase = bestBigram;
+                                }
 
-                                bestPhrase = bestPhrase.trim();
+                                bestPhrase = toTitleCase(bestPhrase.trim());
+                                longestPhrase = toTitleCase(longestPhrase.trim());
+
+                                //If first word is a singel character, remove
+                                int firstSpaceIndex = bestPhrase.indexOf(" ");
+                                if (firstSpaceIndex != -1) {
+                                    StringTokenizer stok = new StringTokenizer(bestPhrase, " ");
+                                    String token = stok.nextToken().trim();
+                                    if(token.length() < 2){
+                                        bestPhrase = (bestPhrase.substring(firstSpaceIndex, bestPhrase.length())).trim();
+                                    }
+                                }
+                                firstSpaceIndex = longestPhrase.indexOf(" ");
+                                if (firstSpaceIndex != -1) {
+                                    StringTokenizer stok = new StringTokenizer(longestPhrase, " ");
+                                    String token = stok.nextToken().trim();
+                                    if(token.length() < 2){
+                                        longestPhrase = (longestPhrase.substring(firstSpaceIndex, longestPhrase.length())).trim();
+                                    }
+                                }
+
+                                if (!bestPhrase.equals(longestPhrase)) {
+                                    bestPhrase = longestPhrase + " | " + bestPhrase + "";
+                                }
 
                                 if (!bestPhrase.contains(" ")) {
                                     bestPhrase = bestBigram;
@@ -247,11 +310,21 @@ public class Predictor {
                                     int loc = bestPhrase.indexOf(' ', 0);
                                     bestPhrase = (bestPhrase.substring(loc, bestPhrase.length())).trim();
                                 }
+                                
+                                //eliminate duplicates in relatedGrams
+                                ArrayList cleanRelatedGramsSubList = new ArrayList();
+                                
+                                for(int k=0;k<relatedGramsList.size();k++){
+                                    String entry = (String) relatedGramsList.get(k);
+                                    if(!bestGramsList.contains(entry)){
+                                        cleanRelatedGramsSubList.add(entry);
+                                    }
+                                }
 
-                                List relatedGramsSubList = relatedGramsList.subList(0, 10);
+                                List relatedGramsSubList = cleanRelatedGramsSubList.subList(0, 10);
                                 String relatedGramsListString = replace(relatedGramsSubList.toString(), ", ", " | ", 0);
 
-                                writeLine(outFileWriter, asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), toTitleCase(bestPhrase), toTitleCase(bestGrams), toTitleCase(relatedGramsListString), line));
+                                writeLine(outFileWriter, asList(toTitleCase(predictedLabel), toTitleCase(bestVerb), toTitleCase(bestNoun), bestPhrase, bestGrams, relatedGramsListString, line));
 
                             }
                         }
