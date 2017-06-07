@@ -1,3 +1,4 @@
 *.lock
 *.bin
 .gradle/buildOutputCleanup/cache.properties
+src/main/java/snappy/ModelTester.java
