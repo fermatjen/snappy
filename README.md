@@ -40,7 +40,7 @@ Label (phrase1, phrase2, phrasen)
 # Configure 
 Edit build/classes/snappy.properties file:
 
-```
+```properties
 # Snappy Configuration File
 # This file contains the basic configuration
 # file to externally control Snappy.
