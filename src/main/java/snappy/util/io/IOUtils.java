@@ -30,6 +30,7 @@ import static java.lang.Integer.parseInt;
 import static java.lang.System.exit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import static java.util.logging.Level.SEVERE;
@@ -400,6 +401,24 @@ public class IOUtils {
             }
         }
 
+    }
+    
+    public static void writeListToFile(List outputList, String outputFile){
+        
+        try {
+            FileWriter writer = new FileWriter(outputFile);
+            
+            for(int i=0;i<outputList.size();i++){
+                String listElement = (String)outputList.get(i);
+                writer.write(listElement+"\r\n");
+            }
+            
+            writer.close();
+            
+        } catch (IOException ex) {
+            getLogger(IOUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     private IOUtils() {

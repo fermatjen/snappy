@@ -26,6 +26,14 @@ compileJava {
 }
 
 dependencies{
+   
+   compile 'org.deeplearning4j:deeplearning4j-core:0.8.0'
+   compile 'org.deeplearning4j:deeplearning4j-nn:0.8.0'
+   compile 'org.deeplearning4j:deeplearning4j-nlp:0.8.0'
+   compile 'org.deeplearning4j:deeplearning4j-modelimport:0.8.0'
+   compile 'org.deeplearning4j:deeplearning4j-ui-components:0.8.0'
+   
+   compile 'org.nd4j:nd4j-native:0.8.0'
    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.5.1'
    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.5.1', classifier: 'models'
    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.6.0'

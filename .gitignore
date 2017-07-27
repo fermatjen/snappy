@@ -2,3 +2,11 @@
 *.bin
 .gradle/buildOutputCleanup/cache.properties
 src/main/java/snappy/ModelTester.java
+*.class
+*.tar
+build/distributions/snappy-1.0.zip
+*.jar
+build/resources/main/snappy.properties
+build/scripts/snappy
+*.bat
+build/tmp/jar/MANIFEST.MF

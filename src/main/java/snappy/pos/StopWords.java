@@ -702,6 +702,12 @@ public class StopWords {
         swords.add("have been");
         
     }
+
+    public ArrayList getSwords() {
+        return swords;
+    }
+    
+    
     
     /**
      *
