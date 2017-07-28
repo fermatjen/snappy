@@ -30,6 +30,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import static java.util.Collections.sort;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -70,6 +71,8 @@ public class POSScrapper {
     private StopWords swords = null;
     private StanfordCoreNLP pipeline = null;
 
+    private HashMap posCacheMap = null;
+
     /**
      *
      * @param nlpModel
@@ -79,6 +82,7 @@ public class POSScrapper {
         tlp = nlpModel.getTlp();
         pipeline = nlpModel.getPipeline();
         swords = new StopWords();
+        posCacheMap = new HashMap();
     }
 
     /**
@@ -108,7 +112,15 @@ public class POSScrapper {
      * @return
      */
     public String getPennString(String text) {
-        //System.out.println("FOR:" + text);
+
+        if (posCacheMap.containsKey(text)) {
+            return (String) posCacheMap.get(text);
+        }
+
+        text = text.trim();
+
+        text = text.replaceAll("\\p{Punct}+", " ");
+        text = text.replaceAll("\\s+", " ");
 
         String cpennString = "";
         //Properties props = new Properties();
@@ -131,6 +143,8 @@ public class POSScrapper {
             cpennString = cpennString + " " + pennString;
 
         }
+
+        posCacheMap.put(text, cpennString);
 
         return cpennString;
     }
