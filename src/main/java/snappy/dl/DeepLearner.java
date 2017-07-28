@@ -147,7 +147,7 @@ public class DeepLearner {
 
     public Word2Vec loadModelFromFile(File filePath) {
         //Load learning model
-        return WordVectorSerializer.readWord2VecModel("C:\\S2V\\data\\test.model");
+        return WordVectorSerializer.readWord2VecModel(filePath);
     }
 
     public void writePhraseOntology(Word2Vec vecModel, File phraseOntologyPath, int maxConenctions, ArrayList seeds) {
