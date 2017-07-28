@@ -212,8 +212,10 @@ public class DeepLearner {
 
                     if (realConnection.length() > 2) {
                         if (!realConnectionList.contains(realConnection)) {
-                            realConnections = realConnections + ", " + realConnection;
-                            realConnectionList.add(realConnection);
+                            if (!realConnection.contains("http") && !realConnection.contains("ftp") && !realConnection.contains("@") && !realConnection.contains(".com")) {
+                                realConnections = realConnections + ", " + realConnection;
+                                realConnectionList.add(realConnection);
+                            }
                         }
                     }
                 }
@@ -233,10 +235,11 @@ public class DeepLearner {
             phrase = replace(phrase, ")", "", 0);
             phrase = replace(phrase, ".", "", 0);
 
-            if (realConnections.trim().length() > 2) {
-                ontologyList.add(phrase + " (" + realConnections + ")");
+            if (!phrase.contains("http") && !phrase.contains("ftp") && !phrase.contains("@") && !phrase.contains(".com")) {
+                if (realConnections.trim().length() > 2) {
+                    ontologyList.add(phrase + " (" + realConnections + ")");
+                }
             }
-
             IOUtils.writeListToFile(ontologyList, phraseOntologyPath.getAbsolutePath());
         }
     }

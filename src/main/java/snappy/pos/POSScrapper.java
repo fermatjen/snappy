@@ -311,10 +311,19 @@ public class POSScrapper {
      * @return
      */
     public ArrayList getPhrases(String raw, String phraseIdentifier) {
+        
+        if (raw.contains("http") || raw.contains("ftp") || raw.contains("@") || raw.contains(".com")) {
+            return new ArrayList();
+        }
+        if (raw.trim().length() < 10) {
+            return new ArrayList();
+        }
 
-        //System.out.println(raw);
-        raw = getPennString(raw);
-        //boolean isNounExtraction = true;
+        try {
+            raw = getPennString(raw);
+        } catch (Exception ex) {
+            return new ArrayList();
+        }
 
         //isNounExtraction = phraseIdentifier.contains("NP");
         int pointer = 0;
