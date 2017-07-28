@@ -136,6 +136,10 @@ public class DeepLearner {
         return vecModel;
     }
 
+    public Collection<String> getNearestWords(Word2Vec vecModel, String query, int limit) {
+        return vecModel.wordsNearest(query, limit);
+    }
+
     public void saveModelToFile(Word2Vec vecModel, File filePath) {
         // Write word vectors to file
         WordVectorSerializer.writeWord2VecModel(vecModel, filePath);
@@ -183,6 +187,8 @@ public class DeepLearner {
 
             String realConnections = "";
 
+            ArrayList realConnectionList = new ArrayList();
+
             StringTokenizer stok2 = new StringTokenizer(connections, ",");
 
             while (stok2.hasMoreTokens()) {
@@ -202,8 +208,13 @@ public class DeepLearner {
                         realConnection = replace(realConnection, swordB, " ", 0);
                     }
 
-                    if (realConnection.trim().length() > 2) {
-                        realConnections = realConnections + ", " + realConnection;
+                    realConnection = realConnection.trim();
+
+                    if (realConnection.length() > 2) {
+                        if (!realConnectionList.contains(realConnection)) {
+                            realConnections = realConnections + ", " + realConnection;
+                            realConnectionList.add(realConnection);
+                        }
                     }
                 }
             }
@@ -217,10 +228,15 @@ public class DeepLearner {
             realConnections = replace(realConnections, ")", "", 0);
             realConnections = replace(realConnections, ".", "", 0);
 
+            phrase = replace(phrase, "_", " ", 0);
+            phrase = replace(phrase, "(", "", 0);
+            phrase = replace(phrase, ")", "", 0);
+            phrase = replace(phrase, ".", "", 0);
+
             if (realConnections.trim().length() > 2) {
                 ontologyList.add(phrase + " (" + realConnections + ")");
             }
-            
+
             IOUtils.writeListToFile(ontologyList, phraseOntologyPath.getAbsolutePath());
         }
     }
