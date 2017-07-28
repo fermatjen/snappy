@@ -19,6 +19,7 @@ package snappy.dl;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.StringTokenizer;
 import static java.util.logging.Level.INFO;
 import java.util.logging.Logger;
@@ -150,6 +151,30 @@ public class DeepLearner {
         return WordVectorSerializer.readWord2VecModel(filePath);
     }
 
+    private String cleanPhrase(List swordsList, String phrase) {
+
+        String cleanedPhrase = "";
+
+        StringTokenizer stok = new StringTokenizer(phrase, " ");
+        String firstToken = stok.nextToken();
+
+        for (int i = 0; i < swordsList.size(); i++) {
+            String swordA = (String) swordsList.get(i);
+            if (firstToken.equals(swordA)) {
+                firstToken = "";
+                break;
+            }
+        }
+        cleanedPhrase = firstToken;
+
+        while (stok.hasMoreTokens()) {
+            cleanedPhrase = cleanedPhrase + " " + stok.nextToken();
+        }
+
+        return cleanedPhrase.trim();
+
+    }
+
     public void writePhraseOntology(Word2Vec vecModel, File phraseOntologyPath, int maxConenctions, ArrayList seeds) {
 
         ArrayList ontologyList = new ArrayList();
@@ -214,8 +239,8 @@ public class DeepLearner {
                         if (!realConnectionList.contains(realConnection)) {
                             if (!realConnection.contains("http") && !realConnection.contains("ftp") && !realConnection.contains("@") && !realConnection.contains(".com")) {
                                 realConnections = realConnections + ", " + realConnection;
-                                realConnectionList.add(realConnection);
                             }
+                            realConnectionList.add(realConnection);
                         }
                     }
                 }
@@ -229,11 +254,10 @@ public class DeepLearner {
             realConnections = replace(realConnections, "(", "", 0);
             realConnections = replace(realConnections, ")", "", 0);
             realConnections = replace(realConnections, ".", "", 0);
+            
+            phrase = phrase.replaceAll("[^\\w\\s]", "").trim();
 
-            phrase = replace(phrase, "_", " ", 0);
-            phrase = replace(phrase, "(", "", 0);
-            phrase = replace(phrase, ")", "", 0);
-            phrase = replace(phrase, ".", "", 0);
+            phrase = cleanPhrase(swordsList, phrase);
 
             if (!phrase.contains("http") && !phrase.contains("ftp") && !phrase.contains("@") && !phrase.contains(".com")) {
                 if (realConnections.trim().length() > 2) {
