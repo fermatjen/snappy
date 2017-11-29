@@ -37,6 +37,21 @@ Sample dataset is available in the data directory. Every line in the dataset cor
 Label (phrase1, phrase2, phrasen)
 ```
 
+The training dataset can either be manually created (recommended) or generated through a DeepLearning Snappy Class:
+
+```java
+\\Use the DeepLearner class a instatiate a Word2Vec Net
+DeepLearner(POSScrapper posScrapper, int minWordFrequency, int epochs, boolean useAdaGrad, int iterations, int layerSize, int seed, int windowSize, int maxGrams)
+
+\\Pass a plain text file to create a Word2Vec model
+Word2Vec createModelFromFile(File filePath)
+
+\\Write the auto-generated training dataset. macConnections denote the number of nearest grams through cosine similiarity
+writePhraseOntology(Word2Vec vecModel, File phraseOntologyPath, int maxConnections) {
+
+```
+
+
 # Configure 
 Edit build/classes/snappy.properties file:
 
